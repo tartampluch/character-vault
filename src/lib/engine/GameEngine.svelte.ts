@@ -3820,6 +3820,21 @@ export class GameEngine {
     this.character.playerName = name || undefined;
   }
 
+  /**
+   * Sets how much information players can see for this NPC/Monster in their
+   * campaign vault. Only meaningful when `character.isNPC === true`.
+   *
+   * The change is picked up by the auto-save effect and persisted to both
+   * localStorage and the PHP API via the regular character save path.
+   * CharacterController.index() enforces these levels server-side.
+   *
+   * @param value - Visibility level: 'hidden' | 'name' | 'name_level' | 'full'
+   * @see Character.playerVisibility for the full level descriptions.
+   */
+  setPlayerVisibility(value: 'hidden' | 'name' | 'name_level' | 'full'): void {
+    this.character.playerVisibility = value;
+  }
+
   /** Sets the base value of an attribute pipeline (e.g., STR base score). */
   setAttributeBase(pipelineId: ID, baseValue: number): void {
     if (this.character.attributes[pipelineId]) {

@@ -13,8 +13,9 @@
  *
  * VISIBILITY RULES (ARCHITECTURE.md Phase 14.5):
  *   - GMs: receive ALL characters in the campaign + raw `gmOverrides` field.
- *   - Players: receive ONLY their own characters with `gmOverrides` already
- *     merged into `character_json` invisibly (player cannot see raw overrides).
+ *   - Players: receive their own characters (gmOverrides merged invisibly) PLUS
+ *     any NPC/Monster whose `playerVisibility` field (in character_json) is not
+ *     'hidden'. Levels: 'hidden' (default) | 'name' | 'name_level' | 'full'.
  *
  * OWNERSHIP VERIFICATION:
  *   All write operations (update, delete) verify that the requester either:
@@ -112,27 +113,19 @@ class CharacterController
                 return $char;
             }, $characters);
         } else {
-            // Players: their own characters PLUS NPC/Monster instances spawned into
-            // the same campaign (limited display data — name, type badge, portrait).
+            // Players: their own characters PLUS any NPC/Monster whose GM-controlled
+            // `playerVisibility` field permits exposure.
             //
-            // WHY SHOW NPCs/MONSTERS TO PLAYERS?
-            //   Per user requirements (Phase 7+ vault spec): players can see the name
-            //   and portrait of NPCs and Monsters in the campaign vault, but NOT their
-            //   level, stats, or character sheet. The frontend CharacterCard renders
-            //   these in view-only mode (no click, no level badge).
-            //
-            // SECURITY: NPC/Monster character_json is NOT included in the response.
-            //   Only display-safe fields (id, name, npcType, posterUrl, playerName) are
-            //   returned.  This prevents players from reading NPC stats via DevTools.
-
+            // PLAYER VISIBILITY LEVELS (set by GM per NPC/Monster, stored in character_json):
+            //   'hidden'     — not included in the player response (default)
+            //   'name'       — stub: id, name, playerName, posterUrl, npcType only
+            //   'name_level' — stub + classLevels (shows class/level badge)
+            //   'full'       — complete character data, flagged read-only for the frontend
             if ($campaignId) {
-                // 1. Own characters in the campaign (full data + GM overrides merged)
                 $ownStmt = $db->prepare('SELECT id, campaign_id, owner_id, name, is_npc, npc_type, character_json, gm_overrides_json, updated_at FROM characters WHERE campaign_id = ? AND owner_id = ?');
                 $ownStmt->execute([$campaignId, $user['id']]);
                 $ownChars = $ownStmt->fetchAll();
 
-                // 2. NPC/Monster instances in the campaign (NOT owned by this player)
-                //    Return only display-safe fields — no stats, no features.
                 $npcStmt = $db->prepare('SELECT id, campaign_id, owner_id, name, is_npc, npc_type, character_json, updated_at FROM characters WHERE campaign_id = ? AND is_npc = 1 AND owner_id != ?');
                 $npcStmt->execute([$campaignId, $user['id']]);
                 $npcChars = $npcStmt->fetchAll();
@@ -145,6 +138,7 @@ class CharacterController
             }
 
             // Build full-data objects for own characters.
+            // SECURITY: GM overrides are injected into activeFeatures (not exposed raw).
             $ownResult = array_map(function ($c) {
                 $char = json_decode($c['character_json'], true) ?? [];
                 $char['id']         = $c['id'];
@@ -155,7 +149,6 @@ class CharacterController
                 $char['npcType']    = $c['npc_type'];
                 $char['updatedAt']  = (int)$c['updated_at'];
 
-                // SECURITY: Inject GM overrides into activeFeatures (not exposed raw).
                 $gmOverrides = json_decode($c['gm_overrides_json'] ?? '[]', true) ?? [];
                 if (!empty($gmOverrides) && is_array($gmOverrides)) {
                     if (!isset($char['activeFeatures']) || !is_array($char['activeFeatures'])) {
@@ -174,33 +167,53 @@ class CharacterController
                 return $char;
             }, $ownChars);
 
-            // Build display-only objects for NPC/Monster instances.
-            // Only display-safe fields are included — no stats, no features.
-            $npcResult = array_map(function ($c) {
-                // Parse only what we need for display (posterUrl, playerName).
-                $rawData   = json_decode($c['character_json'], true) ?? [];
-                return [
-                    'id'           => $c['id'],
-                    'campaignId'   => $c['campaign_id'],
-                    'ownerId'      => $c['owner_id'],
-                    'name'         => $c['name'],
-                    'isNPC'        => true,
-                    'npcType'      => $c['npc_type'],
-                    'posterUrl'    => $rawData['posterUrl']  ?? null,
-                    // playerName: GM name (NPC) or species name (Monster) — safe for display.
-                    'playerName'   => $rawData['playerName'] ?? null,
-                    'classLevels'  => [],       // Hidden — players cannot see NPC levels.
-                    'activeFeatures' => [],     // Hidden — no stats exposed.
-                    'attributes'   => [],
-                    'skills'       => [],
-                    'resources'    => [],
-                    'combatStats'  => [],
-                    'saves'        => [],
-                    'updatedAt'    => (int)$c['updated_at'],
-                    // Flag so the frontend CharacterCard knows to render in view-only mode.
+            // Build visibility-filtered objects for NPC/Monster instances.
+            $npcResult = [];
+            foreach ($npcChars as $c) {
+                $rawData    = json_decode($c['character_json'], true) ?? [];
+                $visibility = $rawData['playerVisibility'] ?? 'hidden';
+
+                if ($visibility === 'hidden') {
+                    continue; // GM has not exposed this NPC/Monster to players.
+                }
+
+                // Common display-safe base shared by all non-hidden levels.
+                $base = [
+                    'id'                => $c['id'],
+                    'campaignId'        => $c['campaign_id'],
+                    'ownerId'           => $c['owner_id'],
+                    'name'              => $c['name'],
+                    'isNPC'             => true,
+                    'npcType'           => $c['npc_type'],
+                    'posterUrl'         => $rawData['posterUrl']  ?? null,
+                    'playerName'        => $rawData['playerName'] ?? null,
+                    'updatedAt'         => (int)$c['updated_at'],
+                    '_playerVisibility' => $visibility,
                     '_playerRestricted' => true,
                 ];
-            }, $npcChars);
+
+                if ($visibility === 'name') {
+                    $npcResult[] = $base;
+                } elseif ($visibility === 'name_level') {
+                    $base['classLevels'] = $rawData['classLevels'] ?? [];
+                    $npcResult[]         = $base;
+                } elseif ($visibility === 'full') {
+                    // Full character data — everything except raw gmOverrides.
+                    $char                      = $rawData;
+                    $char['id']                = $c['id'];
+                    $char['campaignId']        = $c['campaign_id'];
+                    $char['ownerId']           = $c['owner_id'];
+                    $char['name']              = $c['name'];
+                    $char['isNPC']             = true;
+                    $char['npcType']           = $c['npc_type'];
+                    $char['updatedAt']         = (int)$c['updated_at'];
+                    $char['_playerVisibility'] = 'full';
+                    $char['_playerRestricted'] = true;
+                    unset($char['gmOverrides']); // never expose raw gmOverrides to players
+                    $npcResult[]               = $char;
+                }
+                // Any unrecognised value falls through as hidden.
+            }
 
             $result = array_merge($ownResult, $npcResult);
         }

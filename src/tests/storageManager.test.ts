@@ -371,6 +371,7 @@ describe('StorageManager — clearAll()', () => {
 
 // =============================================================================
 // 11. stopPolling() — no crash when called before startPolling
+// Plus rulesHash change detection and localStorage cache invalidation.
 // =============================================================================
 
 describe('StorageManager — stopPolling() safety', () => {
@@ -388,7 +389,7 @@ describe('StorageManager — stopPolling() safety', () => {
       json: () => Promise.resolve({ campaignUpdatedAt: 0, characterTimestamps: {} }),
     }));
 
-    sm.startPolling('campaign_test', () => {}, () => {}, 9_999_999); // Very long interval — never fires
+    sm.startPolling('campaign_test', () => {}, () => {}, undefined, 9_999_999); // Very long interval — never fires
     // Wait for the one immediate poll() async call to settle
     await new Promise(resolve => setTimeout(resolve, 10));
 
@@ -419,12 +420,12 @@ describe('StorageManager — stopPolling() safety', () => {
     }));
 
     // First poll: immediate (callCount=1, baseline stored as 100)
-    sm.startPolling('campaign_poll', onCampaignUpdated, () => {}, 9_999_999);
+    sm.startPolling('campaign_poll', onCampaignUpdated, () => {}, undefined, 9_999_999);
     await new Promise(resolve => setTimeout(resolve, 10));
 
     // Simulate a second poll by stopping and restarting — this triggers the immediate poll again
     sm.stopPolling();
-    sm.startPolling('campaign_poll', onCampaignUpdated, () => {}, 9_999_999); // callCount=2, returns 200 (different → fires)
+    sm.startPolling('campaign_poll', onCampaignUpdated, () => {}, undefined, 9_999_999); // callCount=2, returns 200 (different → fires)
     await new Promise(resolve => setTimeout(resolve, 10));
 
     expect(campaignUpdatedCalled).toBe(true);
@@ -452,16 +453,167 @@ describe('StorageManager — stopPolling() safety', () => {
     }));
 
     // First poll: sets baseline
-    sm.startPolling('campaign_chars', () => {}, onCharsUpdated, 9_999_999);
+    sm.startPolling('campaign_chars', () => {}, onCharsUpdated, undefined, 9_999_999);
     await new Promise(resolve => setTimeout(resolve, 10));
 
     // Second poll: char_b appears
     sm.stopPolling();
-    sm.startPolling('campaign_chars', () => {}, onCharsUpdated, 9_999_999);
+    sm.startPolling('campaign_chars', () => {}, onCharsUpdated, undefined, 9_999_999);
     await new Promise(resolve => setTimeout(resolve, 10));
 
     expect(changedIds).toContain('char_b');
     sm.stopPolling();
+    vi.unstubAllGlobals();
+  });
+
+  // rulesHash tests
+
+  it('onRulesUpdated is NOT called on first poll (no previous hash to compare)', async () => {
+    let rulesUpdatedCalled = false;
+    const sm = new StorageManager();
+
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({
+        campaignUpdatedAt: 0,
+        characterTimestamps: {},
+        rulesHash: 'hash-v1',
+      }),
+    }));
+
+    sm.startPolling('camp_rules', () => {}, () => {}, () => { rulesUpdatedCalled = true; }, 9_999_999);
+    await new Promise(resolve => setTimeout(resolve, 10));
+
+    expect(rulesUpdatedCalled).toBe(false); // No previous hash → no callback
+    sm.stopPolling();
+    vi.unstubAllGlobals();
+  });
+
+  it('onRulesUpdated is called when rulesHash changes between polls', async () => {
+    let rulesUpdatedCalled = false;
+    const sm = new StorageManager();
+
+    let callCount = 0;
+    vi.stubGlobal('fetch', vi.fn().mockImplementation(() => {
+      callCount++;
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({
+          campaignUpdatedAt: 0,
+          characterTimestamps: {},
+          rulesHash: callCount === 1 ? 'hash-v1' : 'hash-v2', // hash changes on second poll
+        }),
+      });
+    }));
+
+    // First poll: baseline hash stored
+    sm.startPolling('camp_rules2', () => {}, () => {}, () => { rulesUpdatedCalled = true; }, 9_999_999);
+    await new Promise(resolve => setTimeout(resolve, 10));
+    expect(rulesUpdatedCalled).toBe(false); // First poll: no previous hash
+
+    // Second poll: hash changed → callback fires
+    sm.stopPolling();
+    sm.startPolling('camp_rules2', () => {}, () => {}, () => { rulesUpdatedCalled = true; }, 9_999_999);
+    await new Promise(resolve => setTimeout(resolve, 10));
+
+    expect(rulesUpdatedCalled).toBe(true);
+    sm.stopPolling();
+    vi.unstubAllGlobals();
+  });
+
+  it('onRulesUpdated is NOT called when rulesHash is unchanged', async () => {
+    let rulesUpdatedCalled = false;
+    const sm = new StorageManager();
+
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({
+        campaignUpdatedAt: 0,
+        characterTimestamps: {},
+        rulesHash: 'hash-stable',
+      }),
+    }));
+
+    // First poll: baseline
+    sm.startPolling('camp_rules3', () => {}, () => {}, () => { rulesUpdatedCalled = true; }, 9_999_999);
+    await new Promise(resolve => setTimeout(resolve, 10));
+
+    // Second poll: same hash
+    sm.stopPolling();
+    sm.startPolling('camp_rules3', () => {}, () => {}, () => { rulesUpdatedCalled = true; }, 9_999_999);
+    await new Promise(resolve => setTimeout(resolve, 10));
+
+    expect(rulesUpdatedCalled).toBe(false);
+    sm.stopPolling();
+    vi.unstubAllGlobals();
+  });
+
+  it('clears localStorage batch cache keys when rulesHash changes', async () => {
+    const sm = new StorageManager();
+
+    // Pre-populate cache keys
+    localStorageMock.setItem('cv_rules_batch_v1', '{"etag":"old","staticFiles":{},"globalFiles":{}}');
+    localStorageMock.setItem('cv_rules_etag_v1', 'old');
+
+    let callCount = 0;
+    vi.stubGlobal('fetch', vi.fn().mockImplementation(() => {
+      callCount++;
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({
+          campaignUpdatedAt: 0,
+          characterTimestamps: {},
+          rulesHash: callCount === 1 ? 'hash-a' : 'hash-b',
+        }),
+      });
+    }));
+
+    // First poll
+    sm.startPolling('camp_cache_clear', () => {}, () => {}, undefined, 9_999_999);
+    await new Promise(resolve => setTimeout(resolve, 10));
+    sm.stopPolling();
+
+    // Keys still present after first poll (no previous hash)
+    expect(localStorageMock.getItem('cv_rules_batch_v1')).not.toBeNull();
+
+    // Second poll: hash changed → keys cleared
+    sm.startPolling('camp_cache_clear', () => {}, () => {}, undefined, 9_999_999);
+    await new Promise(resolve => setTimeout(resolve, 10));
+    sm.stopPolling();
+
+    expect(localStorageMock.getItem('cv_rules_batch_v1')).toBeNull();
+    expect(localStorageMock.getItem('cv_rules_etag_v1')).toBeNull();
+    vi.unstubAllGlobals();
+  });
+
+  it('gracefully skips localStorage clear when localStorage is unavailable', async () => {
+    const sm = new StorageManager();
+
+    // Override localStorage to be unavailable mid-test
+    vi.stubGlobal('localStorage', undefined);
+
+    let callCount = 0;
+    vi.stubGlobal('fetch', vi.fn().mockImplementation(() => {
+      callCount++;
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({
+          campaignUpdatedAt: 0,
+          characterTimestamps: {},
+          rulesHash: callCount === 1 ? 'hash-a' : 'hash-b',
+        }),
+      });
+    }));
+
+    sm.startPolling('camp_no_ls', () => {}, () => {}, undefined, 9_999_999);
+    await new Promise(resolve => setTimeout(resolve, 10));
+    sm.stopPolling();
+
+    sm.startPolling('camp_no_ls', () => {}, () => {}, undefined, 9_999_999);
+    // Should not throw even with localStorage = undefined
+    await expect(new Promise(resolve => setTimeout(resolve, 10))).resolves.toBeUndefined();
+    sm.stopPolling();
+
     vi.unstubAllGlobals();
   });
 });
@@ -1007,7 +1159,7 @@ describe('StorageManager — polling failure branch (isApiReachable = false)', (
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network down')));
 
     const sm = new StorageManager();
-    sm.startPolling('campaign_1', () => {}, () => {}, 60_000);
+    sm.startPolling('campaign_1', () => {}, () => {}, undefined, 60_000);
 
     // startPolling calls poll() immediately (synchronously schedules the async work).
     // Flush all pending micro-tasks so the catch branch executes.

@@ -506,6 +506,13 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
    * needs an ultra-compact 2–3-character label, not the full title.
    */
   'gm.hp_abbr':                   'HP',
+  // NPC/Monster player-visibility selector (GmCharacterOverridesPanel)
+  'gm.player_visibility':              'Player Visibility',
+  'gm.player_visibility_help':         'Controls what players see for this NPC/Monster in their campaign vault.',
+  'gm.player_visibility_hidden':       'Hidden — not visible to players',
+  'gm.player_visibility_name':         'Name only',
+  'gm.player_visibility_name_level':   'Name & level',
+  'gm.player_visibility_full':         'Full access (read-only)',
 
   // ==========================================================================
   // CORE TAB — BASIC INFO

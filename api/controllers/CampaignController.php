@@ -48,6 +48,9 @@ require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../Logger.php';
 require_once __DIR__ . '/../Database.php';
 require_once __DIR__ . '/../auth.php';
+// RulesController provides computeRulesHash() used by syncStatus() to expose
+// a rulesHash field for polling-based cache invalidation.
+require_once __DIR__ . '/RulesController.php';
 
 class CampaignController
 {
@@ -428,8 +431,16 @@ class CampaignController
      *     "characterTimestamps": {
      *       "char_001": 1710754800,
      *       "char_002": 1710754810
-     *     }
+     *     },
+     *     "rulesHash": "abc123..."
      *   }
+     *
+     * RULES HASH:
+     *   An MD5 computed from the modification times of all files in static/rules/
+     *   and storage/rules/. Changes when the GM uploads, modifies, or deletes any
+     *   rule file. The DataLoader's polling callback compares this against the last
+     *   known hash and clears the localStorage batch cache on mismatch, forcing a
+     *   fresh GET /api/rules/batch on the next loadRuleSources() call.
      */
     public static function syncStatus(string $id): void
     {
@@ -465,6 +476,7 @@ class CampaignController
         echo json_encode([
             'campaignUpdatedAt'    => (int)$campaign['updated_at'],
             'characterTimestamps'  => $charTimestamps,
+            'rulesHash'            => RulesController::computeRulesHash(),
         ]);
     }
 

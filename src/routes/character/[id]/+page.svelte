@@ -153,6 +153,14 @@
   // ===========================================================================
 
   /**
+   * Guard flag — plain (non-reactive) boolean so it never creates a reactive
+   * dependency. Prevents getGmGlobalOverrides() from being fired more than once
+   * per page load even if the effect re-runs (e.g. after registerCharacterInVault
+   * mutates allVaultCharacters on the first cold-load path).
+   */
+  let rulesLoadInitiated = false;
+
+  /**
    * Loads the character whenever the URL ID changes.
    *
    * Priority:
@@ -162,14 +170,30 @@
    *
    * Phase 14.6 integration note: StorageManager already wraps both localStorage
    * and the PHP API. No changes needed here when switching to PHP.
+   *
+   * REACTIVE-CYCLE GUARD:
+   *   engine.loadCharacter() writes engine.character ($state). Reading
+   *   engine.character inside this same effect would register it as a reactive
+   *   dependency, causing the effect to re-run every time loadCharacter is
+   *   called — an infinite loop that triggers effect_update_depth_exceeded and
+   *   spams the server with getGmGlobalOverrides requests (→ HTTP 429).
+   *
+   *   Fix: keep a local `activeChar` reference set from the data we already
+   *   have (fromVault / fromStorage / blank) and use it instead of
+   *   engine.character in the data-loading block below.
    */
   $effect(() => {
     const id = characterId;
     if (!id) return;
 
+    // Resolve and load the character, keeping a local reference so the
+    // data-loading section below never needs to read engine.character.
+    let activeChar: import('$lib/types/character').Character;
+
     const fromVault = engine.allVaultCharacters.find(c => c.id === id);
     if (fromVault) {
       engine.loadCharacter(fromVault);
+      activeChar = fromVault;
     } else {
       const fromStorage = storageManager.loadCharacter(id);
       if (fromStorage) {
@@ -177,26 +201,32 @@
         // Register in vault list without re-saving (character was loaded from storage).
         // Uses engine method instead of direct array mutation (ARCHITECTURE.md §3).
         engine.registerCharacterInVault(fromStorage);
+        activeChar = fromStorage;
       } else {
         console.warn(`[CharacterSheet] Character "${id}" not found. Creating blank.`);
-        engine.loadCharacter(createEmptyCharacter(id, ui('character.unknown_name', engine.settings.language)));
+        activeChar = createEmptyCharacter(id, ui('character.unknown_name', engine.settings.language));
+        engine.loadCharacter(activeChar);
       }
     }
 
     // Ensure rule sources are loaded even when navigating directly to a character
     // (bypassing the vault page that normally triggers the load).
     // Uses the character's campaign sources if available, or engine settings as fallback.
-    if (!dataLoader.isLoaded) {
-      const char = engine.character;
-      const camp = char.campaignId ? campaignStore.getCampaign(char.campaignId) : undefined;
+    // rulesLoadInitiated is a plain boolean (not $state) so writing it here does
+    // NOT trigger another effect re-run.
+    if (!dataLoader.isLoaded && !rulesLoadInitiated) {
+      rulesLoadInitiated = true;
+      const camp = activeChar.campaignId ? campaignStore.getCampaign(activeChar.campaignId) : undefined;
       const enabledSources = camp?.enabledRuleSources ?? engine.settings.enabledRuleSources;
       // GM global overrides are now server-wide (not per-campaign).
       // Fetch from GET /api/server-settings/gm-overrides instead of campaign.gmGlobalOverrides.
       getGmGlobalOverrides()
-        .then(gmOverrides =>
-          dataLoader.loadRuleSources(enabledSources, gmOverrides)
-        )
-        .catch(err => console.warn('[CharacterSheet] Failed to load rule sources:', err));
+        .then(gmOverrides => dataLoader.loadRuleSources(enabledSources, gmOverrides))
+        .then(() => engine.bumpDataLoaderVersion())
+        .catch(err => {
+          console.warn('[CharacterSheet] Failed to load rule sources:', err);
+          rulesLoadInitiated = false; // allow retry on next navigation
+        });
     }
   });
 

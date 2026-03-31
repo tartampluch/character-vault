@@ -296,6 +296,37 @@ interface GlobalRuleFileInfo {
   bytes: number;
 }
 
+// =============================================================================
+// BATCH RULES CACHE — localStorage-backed response from GET /api/rules/batch
+// =============================================================================
+
+/**
+ * Shape of the response from `GET /api/rules/batch`.
+ *
+ * The endpoint returns all static and global rule file wrappers in one payload,
+ * keyed by relative path (static) or filename (global). This avoids the N
+ * individual file fetches that were previously made for each rule file.
+ */
+interface RulesBatchResponse {
+  /** ETag computed from the combined mtimes of all rule files. */
+  etag: string;
+  /** static/rules/ files, keyed by relative path (e.g. "00_d20srd_core/01_races.json"). */
+  staticFiles: Record<string, RuleFileWrapper>;
+  /** storage/rules/ files, keyed by filename (e.g. "50_custom.json"). */
+  globalFiles: Record<string, RuleFileWrapper>;
+}
+
+/**
+ * localStorage key for the full batch cache (etag + file data).
+ * Versioned to allow future schema changes without stale data issues.
+ */
+const BATCH_CACHE_KEY = 'cv_rules_batch_v1';
+
+/**
+ * localStorage key for the ETag only (used when the full data doesn't fit).
+ */
+const BATCH_ETAG_KEY = 'cv_rules_etag_v1';
+
 /**
  * The DataLoader is responsible for:
  *   1. Loading JSON rule source files (from static/rules/ and storage/rules/).
@@ -520,126 +551,106 @@ export class DataLoader {
        : new Set<string>();
 
     // -----------------------------------------------------------------------
-    // Step 1a: Discover static rule files via GET /rules or manifest.json
+    // Steps 1–4: Load all rule files.
+    //
+    // PRIMARY PATH — batch endpoint (single request + ETag cache):
+    //   GET /api/rules/batch returns every static + global rule file in one
+    //   JSON payload, with an ETag computed from file modification times.
+    //   On subsequent loads the `If-None-Match` header allows the server to
+    //   return 304 Not Modified — zero data transfer when nothing changed.
+    //   See `#tryLoadRulesBatch()` for full details.
+    //
+    // FALLBACK PATH — individual file fetches (original implementation):
+    //   Used when the batch endpoint is unavailable (e.g. in Vitest unit tests
+    //   that have no PHP backend, or during first deployment before the new
+    //   endpoint is available). Preserves full backward compatibility.
     // -----------------------------------------------------------------------
-    let staticFilePaths: string[] = [];
-    try {
-      // PRIMARY: SvelteKit endpoint scans static/rules/ recursively.
-      // Returns a JSON array of URL paths like ["/rules/00_srd_core/races.json", ...]
-      const discoveryResponse = await fetch('/rules');
-      if (discoveryResponse.ok) {
-        const contentType = discoveryResponse.headers.get('content-type') ?? '';
-        if (contentType.includes('application/json')) {
-          staticFilePaths = await discoveryResponse.json() as string[];
-        } else {
-          // SvelteKit returned HTML (e.g., dev server not running) — fall through
-          throw new Error('Discovery endpoint returned non-JSON');
-        }
-      } else {
-        throw new Error(`Discovery endpoint returned HTTP ${discoveryResponse.status}`);
-      }
-    } catch (discoveryErr) {
-      // FALLBACK: static manifest.json
-      console.info('[DataLoader] Auto-discovery endpoint unavailable, using manifest.json:', discoveryErr);
+    const batchLoaded = await this.#tryLoadRulesBatch();
+
+    if (!batchLoaded) {
+      // ── FALLBACK: discover and fetch each file individually ──────────────
+
+      // Step 1a: Discover static rule files via GET /rules or manifest.json
+      let staticFilePaths: string[] = [];
       try {
-        const manifestResponse = await fetch('/rules/manifest.json');
-        if (manifestResponse.ok) {
-          staticFilePaths = await manifestResponse.json() as string[];
+        // PRIMARY: SvelteKit endpoint scans static/rules/ recursively.
+        // Returns a JSON array of URL paths like ["/rules/00_srd_core/races.json", ...]
+        const discoveryResponse = await fetch('/rules');
+        if (discoveryResponse.ok) {
+          const contentType = discoveryResponse.headers.get('content-type') ?? '';
+          if (contentType.includes('application/json')) {
+            staticFilePaths = await discoveryResponse.json() as string[];
+          } else {
+            // SvelteKit returned HTML (e.g., dev server not running) — fall through
+            throw new Error('Discovery endpoint returned non-JSON');
+          }
         } else {
-          console.warn('[DataLoader] manifest.json not available either. No static rule sources loaded.');
+          throw new Error(`Discovery endpoint returned HTTP ${discoveryResponse.status}`);
         }
-      } catch (manifestErr) {
-        console.warn('[DataLoader] Failed to load manifest.json:', manifestErr);
-      }
-    }
-
-    // -----------------------------------------------------------------------
-    // Step 1b: Discover global rule files via GET /api/global-rules
-    // -----------------------------------------------------------------------
-    // This endpoint is served by GlobalRulesController::list() and returns
-    // [{ filename: "50_my_setting.json", bytes: 4096 }, ...].
-    // It is accessible to all authenticated users so DataLoader can call it
-    // for all players, not just GMs.
-    //
-    // Failure is non-fatal: if the PHP server is not available (e.g. in
-    // unit tests or SvelteKit-only dev mode), we simply skip global files.
-    let globalFileInfos: GlobalRuleFileInfo[] = [];
-    try {
-      const globalListResponse = await fetch('/api/global-rules');
-      if (globalListResponse.ok) {
-        const raw = await globalListResponse.json() as unknown;
-        // Guard against malformed responses: the endpoint must return an array.
-        // A non-array response (e.g. an error object) would make `for...of` below
-        // throw a TypeError since plain objects are not iterable.
-        if (Array.isArray(raw)) {
-          globalFileInfos = raw as GlobalRuleFileInfo[];
-        } else {
-          console.warn('[DataLoader] GET /api/global-rules did not return a JSON array. Skipping global rule files.');
+      } catch (discoveryErr) {
+        // FALLBACK: static manifest.json
+        console.info('[DataLoader] Auto-discovery endpoint unavailable, using manifest.json:', discoveryErr);
+        try {
+          const manifestResponse = await fetch('/rules/manifest.json');
+          if (manifestResponse.ok) {
+            staticFilePaths = await manifestResponse.json() as string[];
+          } else {
+            console.warn('[DataLoader] manifest.json not available either. No static rule sources loaded.');
+          }
+        } catch (manifestErr) {
+          console.warn('[DataLoader] Failed to load manifest.json:', manifestErr);
         }
-      } else if (globalListResponse.status !== 404) {
-        // 404 = storage/rules/ is empty or endpoint not yet wired — expected. Anything
-        // else (401, 500) is worth logging.
-        console.warn('[DataLoader] GET /api/global-rules returned HTTP', globalListResponse.status);
-      }
-    } catch (globalErr) {
-      // No PHP server in this environment (e.g., unit tests via Vitest).
-      // Log at debug level — this is an expected condition during testing.
-      console.debug('[DataLoader] GET /api/global-rules unavailable (no backend?). Skipping global rule files.');
-    }
-
-    // -----------------------------------------------------------------------
-    // Step 1c: Build unified FileEntry[] and sort together alphabetically
-    // -----------------------------------------------------------------------
-    // Static files:
-    //   fetchUrl: "/rules/00_srd_core/races.json"
-    //   sortKey:  "00_srd_core/races.json"  (strip the leading "/rules/")
-    //
-    // Global files:
-    //   fetchUrl: "/api/global-rules/50_my_setting.json"
-    //   sortKey:  "50_my_setting.json"       (bare filename)
-    //
-    // Comparing "00_srd_core/races.json" vs "50_my_setting.json" naturally
-    // places the global file after all 00_* and 01_* SRD content — exactly
-    // the intended load-order behaviour described in ARCHITECTURE.md §21.5.
-    const fileEntries: FileEntry[] = [];
-
-    for (const fetchUrl of staticFilePaths) {
-      // Strip the "/rules/" URL prefix to derive the sort key.
-      // The sort key doubles as the file path used in enabledFilePaths matching:
-      //   fetchUrl  → "/rules/00_d20srd_core/01_d20srd_core_races.json"
-      //   sortKey   → "00_d20srd_core/01_d20srd_core_races.json"
-      const sortKey = fetchUrl.startsWith('/rules/')
-        ? fetchUrl.slice('/rules/'.length)
-        : fetchUrl;
-
-      // File-path filtering: when enabledFilePaths is non-empty, skip files
-      // not explicitly selected by the campaign settings.
-      if (this.enabledFilePaths.size > 0 && !this.enabledFilePaths.has(sortKey)) {
-        continue;
       }
 
-      fileEntries.push({ sortKey, fetchUrl, isGlobal: false });
-    }
+      // Step 1b: Discover global rule files via GET /api/global-rules
+      let globalFileInfos: GlobalRuleFileInfo[] = [];
+      try {
+        const globalListResponse = await fetch('/api/global-rules');
+        if (globalListResponse.ok) {
+          const raw = await globalListResponse.json() as unknown;
+          if (Array.isArray(raw)) {
+            globalFileInfos = raw as GlobalRuleFileInfo[];
+          } else {
+            console.warn('[DataLoader] GET /api/global-rules did not return a JSON array. Skipping global rule files.');
+          }
+        } else if (globalListResponse.status !== 404) {
+          console.warn('[DataLoader] GET /api/global-rules returned HTTP', globalListResponse.status);
+        }
+      } catch {
+        console.debug('[DataLoader] GET /api/global-rules unavailable (no backend?). Skipping global rule files.');
+      }
 
-    for (const info of globalFileInfos) {
-      fileEntries.push({
-        sortKey:  info.filename,                               // e.g. "50_my_setting.json"
-        fetchUrl: `/api/global-rules/${info.filename}`,        // served by GlobalRulesController
-        isGlobal: true,
-      });
-    }
+      // Step 1c: Build unified FileEntry[] and sort together alphabetically
+      const fileEntries: FileEntry[] = [];
 
-    // Defensive sort: alphabetical by sortKey (case-insensitive).
-    // Architecture §21.5 requires the combined list to be sorted by filename/path.
-    fileEntries.sort((a, b) =>
-      a.sortKey.localeCompare(b.sortKey, undefined, { sensitivity: 'base' })
-    );
+      for (const fetchUrl of staticFilePaths) {
+        const sortKey = fetchUrl.startsWith('/rules/')
+          ? fetchUrl.slice('/rules/'.length)
+          : fetchUrl;
 
-    // -----------------------------------------------------------------------
-    // Steps 2–4: Load and process each file in sorted order
-    // -----------------------------------------------------------------------
-    for (const entry of fileEntries) {
-      await this.#loadRuleFile(entry.fetchUrl, entry.isGlobal);
+        if (this.enabledFilePaths.size > 0 && !this.enabledFilePaths.has(sortKey)) {
+          continue;
+        }
+
+        fileEntries.push({ sortKey, fetchUrl, isGlobal: false });
+      }
+
+      for (const info of globalFileInfos) {
+        fileEntries.push({
+          sortKey:  info.filename,
+          fetchUrl: `/api/global-rules/${info.filename}`,
+          isGlobal: true,
+        });
+      }
+
+      fileEntries.sort((a, b) =>
+        a.sortKey.localeCompare(b.sortKey, undefined, { sensitivity: 'base' })
+      );
+
+      // Steps 2–4: Load and process each file in sorted order
+      for (const entry of fileEntries) {
+        await this.#loadRuleFile(entry.fetchUrl, entry.isGlobal);
+      }
     }
 
     // -----------------------------------------------------------------------
@@ -696,36 +707,231 @@ export class DataLoader {
         return;
       }
 
-      const entities: RawEntity[] = raw.entities;
-
-      // Register languages declared in the file-level `supportedLanguages` array
-      // (fast path: allows the file author to declare all languages upfront).
-      // In addition, `#processEntity()` calls `scanEntityForLanguages()` on each
-      // entity, so any language used in a LocalizedString field is discovered even
-      // when `supportedLanguages` is absent or incomplete.
-      if (Array.isArray(raw.supportedLanguages)) {
-        for (const lang of raw.supportedLanguages) {
-          if (typeof lang === 'string' && lang.trim()) {
-            this._availableLanguages.add(lang.trim());
-          }
-        }
-      }
-
-      // If this file comes from storage/rules/ (global scope), record every ruleSource
-      // value it contains so getHomebrewRules('global') can identify them.
-      if (isGlobal) {
-        for (const entity of entities) {
-          if (entity.ruleSource && typeof entity.ruleSource === 'string') {
-            this._globalRuleSourceIds.add(entity.ruleSource);
-          }
-        }
-      }
-
-      for (const entity of entities) {
-        this.#processEntity(entity);
-      }
+      this.#processRuleFileWrapper(raw, isGlobal);
     } catch (err) {
       console.warn(`[DataLoader] Error loading rule file ${filePath}:`, err);
+    }
+  }
+
+  /**
+   * Processes an already-fetched (or cached) rule file wrapper into the entity caches.
+   *
+   * Extracted from `#loadRuleFile` so the same logic can be reused by the batch
+   * loader (`#processBatchData`) without duplicating the language-discovery and
+   * global-ruleSource bookkeeping code.
+   *
+   * @param wrapper  - The parsed `{ supportedLanguages?, entities }` object.
+   * @param isGlobal - When `true`, every entity's `ruleSource` is recorded in
+   *                   `_globalRuleSourceIds` (same semantics as `#loadRuleFile`).
+   */
+  #processRuleFileWrapper(wrapper: RuleFileWrapper, isGlobal: boolean): void {
+    // Register languages declared in the file-level `supportedLanguages` array.
+    if (Array.isArray(wrapper.supportedLanguages)) {
+      for (const lang of wrapper.supportedLanguages) {
+        if (typeof lang === 'string' && lang.trim()) {
+          this._availableLanguages.add(lang.trim());
+        }
+      }
+    }
+
+    // If this file comes from storage/rules/ (global scope), record every ruleSource
+    // value it contains so getHomebrewRules('global') can identify them.
+    if (isGlobal) {
+      for (const entity of wrapper.entities) {
+        if (entity.ruleSource && typeof entity.ruleSource === 'string') {
+          this._globalRuleSourceIds.add(entity.ruleSource);
+        }
+      }
+    }
+
+    for (const entity of wrapper.entities) {
+      this.#processEntity(entity);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // BATCH LOADER — single-request alternative to individual file fetches
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Attempts to load ALL rule files via a single `GET /api/rules/batch` request,
+   * with localStorage caching keyed by ETag.
+   *
+   * FLOW:
+   *   1. Read the cached ETag from localStorage (if any).
+   *   2. `GET /api/rules/batch` with `If-None-Match: "<etag>"` header.
+   *   3a. HTTP 304 → ETag matched, serve full data from localStorage cache.
+   *   3b. HTTP 200 → Fresh data; process and update the localStorage cache.
+   *   3c. Any error or non-200/304 → return `false` to trigger fallback.
+   *
+   * CACHE STRUCTURE (localStorage key `cv_rules_batch_v1`):
+   *   `{ etag: string, staticFiles: {...}, globalFiles: {...} }`
+   *
+   * SIZE SAFETY:
+   *   If the payload exceeds the localStorage quota (~5 MB per origin in most
+   *   browsers), the full data is not cached but the ETag alone is stored in
+   *   `cv_rules_etag_v1`. On the next page load, the If-None-Match check is
+   *   attempted but a 304 cannot be served without the data, so a fresh 200
+   *   load occurs — still only ONE request instead of 30+.
+   *
+   * FALLBACK:
+   *   Returns `false` when the batch endpoint is unavailable (e.g., in Vitest
+   *   unit tests, or when only a SvelteKit dev server is running without the
+   *   PHP backend). The caller then falls back to individual file fetches.
+   *
+   * @returns `true` if all files were loaded from the batch response or cache;
+   *          `false` if the batch endpoint was unavailable or returned an error.
+   */
+  async #tryLoadRulesBatch(): Promise<boolean> {
+    // ── Read localStorage cache ─────────────────────────────────────────────
+    let cachedEtag: string | null = null;
+    let cachedData: { staticFiles: Record<string, RuleFileWrapper>; globalFiles: Record<string, RuleFileWrapper> } | null = null;
+
+    if (typeof localStorage !== 'undefined') {
+      try {
+        const fullCache = localStorage.getItem(BATCH_CACHE_KEY);
+        if (fullCache) {
+          const parsed = JSON.parse(fullCache) as {
+            etag: string;
+            staticFiles: Record<string, RuleFileWrapper>;
+            globalFiles: Record<string, RuleFileWrapper>;
+          };
+          cachedEtag = parsed.etag ?? null;
+          cachedData = { staticFiles: parsed.staticFiles ?? {}, globalFiles: parsed.globalFiles ?? {} };
+        } else {
+          // Only the ETag was stored (data exceeded quota on a previous load).
+          cachedEtag = localStorage.getItem(BATCH_ETAG_KEY);
+        }
+      } catch {
+        // localStorage unavailable (SSR, strict private browsing).
+      }
+    }
+
+    // ── Fetch from server ───────────────────────────────────────────────────
+    const headers: Record<string, string> = {};
+    if (cachedEtag) {
+      headers['If-None-Match'] = `"${cachedEtag}"`;
+    }
+
+    try {
+      const response = await fetch('/api/rules/batch', {
+        headers,
+        credentials: 'include',
+      });
+
+      // ── 304 Not Modified: serve from localStorage cache ──────────────────
+      if (response.status === 304) {
+        if (cachedData) {
+          this.#processBatchData(cachedData.staticFiles, cachedData.globalFiles);
+          return true;
+        }
+        // ETag matched but data is missing (quota-exceeded scenario) —
+        // fall through to handle as a fresh 200 by re-fetching without the ETag.
+        // (This is safe: the browser won't cache this specific 304 body.)
+        // Re-issue without the conditional header:
+        const freshResponse = await fetch('/api/rules/batch', { credentials: 'include' });
+        if (!freshResponse.ok) return false;
+        const freshResult = await freshResponse.json() as RulesBatchResponse;
+        this.#processBatchData(freshResult.staticFiles, freshResult.globalFiles);
+        this.#saveBatchCache(freshResult);
+        return true;
+      }
+
+      // ── 200 OK: fresh data ───────────────────────────────────────────────
+      if (response.ok) {
+        const result = await response.json() as RulesBatchResponse;
+        this.#processBatchData(result.staticFiles, result.globalFiles);
+        this.#saveBatchCache(result);
+        return true;
+      }
+
+      // ── Non-200/304 (e.g. 401, 500) ──────────────────────────────────────
+      if (response.status !== 404) {
+        // 404 = endpoint not yet deployed; expected during dev without the PHP backend.
+        console.warn(`[DataLoader] GET /api/rules/batch returned HTTP ${response.status}. Falling back to individual fetches.`);
+      }
+      return false;
+    } catch {
+      // Network error or endpoint not available (Vitest, SvelteKit-only dev mode).
+      return false;
+    }
+  }
+
+  /**
+   * Persists the batch response to localStorage.
+   *
+   * Attempts to store the full payload first. On QuotaExceededError, stores only
+   * the ETag so future loads can still send an `If-None-Match` header (the server
+   * will return 200 with fresh data instead of 304, but it's still one request).
+   */
+  #saveBatchCache(result: RulesBatchResponse): void {
+    if (typeof localStorage === 'undefined') return;
+    try {
+      localStorage.setItem(
+        BATCH_CACHE_KEY,
+        JSON.stringify({ etag: result.etag, staticFiles: result.staticFiles, globalFiles: result.globalFiles })
+      );
+      // Remove the ETag-only fallback key if a full cache was just written.
+      localStorage.removeItem(BATCH_ETAG_KEY);
+    } catch {
+      // QuotaExceededError — store only the ETag.
+      try {
+        localStorage.removeItem(BATCH_CACHE_KEY);
+        localStorage.setItem(BATCH_ETAG_KEY, result.etag);
+      } catch {
+        // localStorage completely unavailable.
+      }
+    }
+  }
+
+  /**
+   * Processes the two maps from a batch response (or localStorage cache) into
+   * the feature and config-table caches.
+   *
+   * Applies the same `enabledFilePaths` filter as the individual-fetch path, so
+   * switching between batch and fallback produces identical results.
+   *
+   * @param staticFiles - Record keyed by relative path (e.g. "00_d20srd_core/01_races.json").
+   * @param globalFiles - Record keyed by filename (e.g. "50_custom.json").
+   */
+  #processBatchData(
+    staticFiles: Record<string, RuleFileWrapper>,
+    globalFiles: Record<string, RuleFileWrapper>
+  ): void {
+    // Sort by key for deterministic alphabetical loading order (same as file-path sort).
+    const sortedStatic = Object.entries(staticFiles)
+      .sort(([a], [b]) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+
+    for (const [relativePath, wrapper] of sortedStatic) {
+      if (typeof wrapper !== 'object' || wrapper === null || !Array.isArray(wrapper.entities)) continue;
+      // Apply the same enabledFilePaths filter as the individual-fetch path.
+      if (this.enabledFilePaths.size > 0 && !this.enabledFilePaths.has(relativePath)) continue;
+      this.#processRuleFileWrapper(wrapper, false);
+    }
+
+    const sortedGlobal = Object.entries(globalFiles)
+      .sort(([a], [b]) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+
+    for (const [, wrapper] of sortedGlobal) {
+      if (typeof wrapper !== 'object' || wrapper === null || !Array.isArray(wrapper.entities)) continue;
+      this.#processRuleFileWrapper(wrapper, true);
+    }
+  }
+
+  /**
+   * Clears the localStorage rules batch cache (both full-data and ETag-only keys).
+   *
+   * Called by the polling mechanism when it detects that the server-side rules
+   * hash has changed (i.e., the GM uploaded or deleted a rule file).
+   * The next `loadRuleSources()` call will then perform a fresh unconditional fetch.
+   */
+  static clearBatchCache(): void {
+    if (typeof localStorage === 'undefined') return;
+    try {
+      localStorage.removeItem(BATCH_CACHE_KEY);
+      localStorage.removeItem(BATCH_ETAG_KEY);
+    } catch {
+      // localStorage unavailable.
     }
   }
 

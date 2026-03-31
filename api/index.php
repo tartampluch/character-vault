@@ -37,7 +37,8 @@
  *     PUT    /api/characters/{id}/gm-overrides → CharacterController::updateGmOverrides($id)
  *     DELETE /api/characters/{id}         → CharacterController::delete($id)
  *
- *   Rules:
+   *   Rules:
+ *     GET    /api/rules/batch                   → RulesController::batch() (all files + ETag, single request)
  *     GET    /api/rules/list                    → RulesController::list()  (returns available source files)
  *
  *   Users (Phase 22.3 — admin-only):
@@ -259,6 +260,9 @@ try {
     } elseif (preg_match('#^/characters/([^/]+)$#', $path, $m) && $method === 'DELETE') {
         verifyCsrfToken();
         CharacterController::delete($m[1]);
+
+    } elseif ($path === '/rules/batch' && $method === 'GET') {
+        RulesController::batch();
 
     } elseif ($path === '/rules/list' && $method === 'GET') {
         RulesController::list();

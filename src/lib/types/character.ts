@@ -409,6 +409,28 @@ export interface Character {
   npcType?: 'npc' | 'monster';
 
   /**
+   * Controls what information players can see for this NPC/Monster in their
+   * campaign vault. Set by the GM per NPC/Monster instance.
+   *
+   * Values:
+   *   'hidden'     — The NPC/Monster does not appear in player responses at all.
+   *                  This is the DEFAULT when the field is absent or undefined.
+   *   'name'       — Players see a display stub: name, playerName, posterUrl,
+   *                  npcType. No stats, no class levels, no features.
+   *   'name_level' — Same as 'name' plus classLevels, so players can see the
+   *                  class/level badge on the CharacterCard (e.g. "Fighter 5").
+   *   'full'       — Players receive the complete character data, flagged as
+   *                  _playerRestricted so the frontend renders it read-only in
+   *                  a summary modal. gmOverrides are still stripped.
+   *
+   * Only meaningful when `isNPC === true`. Ignored for regular PCs.
+   * Stored in `character_json` by the PHP backend.
+   *
+   * @see api/controllers/CharacterController.php index() — server-side enforcement
+   */
+  playerVisibility?: 'hidden' | 'name' | 'name_level' | 'full';
+
+  /**
    * Whether this Character record represents a TEMPLATE (not a playable instance).
    *
    * Templates are stored in the `templates` table and are edited through the

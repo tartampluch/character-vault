@@ -1,26 +1,27 @@
 /**
  * @file src/tests/characterFields.test.ts
- * @description Unit tests for the character `name` and `playerName` fields
- *              introduced in the BasicInfo panel update.
+ * @description Unit tests for scalar character metadata fields.
  *
  * SCOPE:
- *   - `Character.name`       — the in-game character name, always present.
- *   - `Character.playerName` — optional player name / nickname, PCs only.
- *   - `Character.isNPC`      — discriminator between PCs and NPCs.
- *   - `StorageManager` round-trip — both fields survive save → load.
+ *   - `Character.name`             — the in-game character name, always present.
+ *   - `Character.playerName`       — optional player name / nickname, PCs only.
+ *   - `Character.isNPC`            — discriminator between PCs and NPCs.
+ *   - `Character.playerVisibility` — GM-controlled NPC visibility level.
+ *   - `StorageManager` round-trip  — all fields survive save → load.
  *   - `canDelete` permission logic — extracted as a pure helper and tested in
  *     isolation (the same logic used in the vault page).
  *
  * WHAT IS NOT TESTED HERE:
- *   - The Svelte UI rendering of the inputs (no jsdom in this test environment).
- *   - `GameEngine.removeCharacterFromVault()` — requires Svelte rune context.
- *     The StorageManager.deleteCharacterFromApi() it delegates to is covered in
- *     storageManager.test.ts.
+ *   - The Svelte UI rendering (no jsdom in this test environment).
+ *   - `GameEngine.setPlayerVisibility()` / `GameEngine.removeCharacterFromVault()`
+ *     — require Svelte rune context.  The underlying character mutation and the
+ *     StorageManager.deleteCharacterFromApi() path are covered by other test files.
  *
- * @see src/lib/components/core/BasicInfo.svelte   — name / playerName inputs
- * @see src/lib/types/character.ts                 — Character type definition
- * @see src/lib/engine/StorageManager.ts           — persistence layer
- * @see src/lib/components/vault/CharacterCard.svelte — subtitle display logic
+ * @see src/lib/components/core/BasicInfo.svelte             — name / playerName inputs
+ * @see src/lib/components/gm/GmCharacterOverridesPanel.svelte — playerVisibility selector
+ * @see src/lib/types/character.ts                            — Character type definition
+ * @see src/lib/engine/StorageManager.ts                      — persistence layer
+ * @see src/lib/components/vault/CharacterCard.svelte         — subtitle display logic
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
@@ -289,5 +290,118 @@ describe('canDelete() — vault deletion permission rules', () => {
     char.ownerId = 'user_player_001';
     // Different user ID
     expect(canDelete(char, 'user_player_999', false)).toBe(false);
+  });
+});
+
+// =============================================================================
+// 6. Character.playerVisibility — GM-controlled NPC visibility level
+// =============================================================================
+
+describe('Character.playerVisibility — GM-controlled visibility level', () => {
+  it('is undefined by default on a freshly created NPC', () => {
+    const npc = makeNPC('npc_050');
+    expect(npc.playerVisibility).toBeUndefined();
+  });
+
+  it('is undefined by default on a freshly created PC', () => {
+    // The field is optional and has no meaning for PCs, but the type allows it.
+    const pc = makePC('char_050');
+    expect(pc.playerVisibility).toBeUndefined();
+  });
+
+  it('can be set to "hidden" on an NPC', () => {
+    const npc = makeNPC('npc_051');
+    npc.playerVisibility = 'hidden';
+    expect(npc.playerVisibility).toBe('hidden');
+  });
+
+  it('can be set to "name" on an NPC', () => {
+    const npc = makeNPC('npc_052');
+    npc.playerVisibility = 'name';
+    expect(npc.playerVisibility).toBe('name');
+  });
+
+  it('can be set to "name_level" on an NPC', () => {
+    const npc = makeNPC('npc_053');
+    npc.playerVisibility = 'name_level';
+    expect(npc.playerVisibility).toBe('name_level');
+  });
+
+  it('can be set to "full" on an NPC', () => {
+    const npc = makeNPC('npc_054');
+    npc.playerVisibility = 'full';
+    expect(npc.playerVisibility).toBe('full');
+  });
+
+  it('can be cleared back to undefined', () => {
+    const npc = makeNPC('npc_055');
+    npc.playerVisibility = 'name';
+    npc.playerVisibility = undefined;
+    expect(npc.playerVisibility).toBeUndefined();
+  });
+
+  it('setting visibility on an NPC does not affect other NPC fields', () => {
+    const npc = makeNPC('npc_056', 'Goblin Scout');
+    npc.playerVisibility = 'name_level';
+    expect(npc.name).toBe('Goblin Scout');
+    expect(npc.isNPC).toBe(true);
+    expect(npc.playerVisibility).toBe('name_level');
+  });
+});
+
+// =============================================================================
+// 7. StorageManager round-trip — playerVisibility survives save / load
+// =============================================================================
+
+describe('StorageManager — playerVisibility round-trip', () => {
+  it('persists playerVisibility and retrieves it intact', () => {
+    const sm  = new StorageManager();
+    const npc = makeNPC('npc_060');
+    npc.playerVisibility = 'name_level';
+    sm.saveCharacter(npc);
+    expect(sm.loadCharacter('npc_060')?.playerVisibility).toBe('name_level');
+  });
+
+  it('loaded NPC has playerVisibility = undefined when none was set', () => {
+    const sm  = new StorageManager();
+    const npc = makeNPC('npc_061');
+    sm.saveCharacter(npc);
+    expect(sm.loadCharacter('npc_061')?.playerVisibility).toBeUndefined();
+  });
+
+  // All four valid values survive the round-trip.
+  const ALL_LEVELS = ['hidden', 'name', 'name_level', 'full'] as const;
+  for (const level of ALL_LEVELS) {
+    it(`playerVisibility="${level}" survives save → load`, () => {
+      const sm  = new StorageManager();
+      const npc = makeNPC(`npc_062_${level}`);
+      npc.playerVisibility = level;
+      sm.saveCharacter(npc);
+      expect(sm.loadCharacter(`npc_062_${level}`)?.playerVisibility).toBe(level);
+    });
+  }
+
+  it('overwriting visibility with a new level updates the stored value', () => {
+    const sm  = new StorageManager();
+    const npc = makeNPC('npc_063');
+    npc.playerVisibility = 'name';
+    sm.saveCharacter(npc);
+
+    npc.playerVisibility = 'full';
+    sm.saveCharacter(npc);
+
+    expect(sm.loadCharacter('npc_063')?.playerVisibility).toBe('full');
+  });
+
+  it('overwriting visibility to undefined removes it from stored data', () => {
+    const sm  = new StorageManager();
+    const npc = makeNPC('npc_064');
+    npc.playerVisibility = 'name_level';
+    sm.saveCharacter(npc);
+
+    npc.playerVisibility = undefined;
+    sm.saveCharacter(npc);
+
+    expect(sm.loadCharacter('npc_064')?.playerVisibility).toBeUndefined();
   });
 });

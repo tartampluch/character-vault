@@ -1,19 +1,22 @@
 <!--
   @file src/lib/components/gm/GmCharacterOverridesPanel.svelte
-  @description Per-character GM overrides editor panel.
+  @description Per-character GM controls panel (GM/Admin only).
 
-  Allows a GM or admin to edit the `gmOverrides` array for the currently active
-  engine character. Shows a JSON textarea with live validation and a save button
-  that calls `PUT /api/characters/{id}/gm-overrides`.
+  Two sections, both reading/writing engine.character directly:
 
-  IMPORTANT: This component reads and writes `engine.character.gmOverrides` (the
-  raw override array for the active character), NOT the global campaign overrides
-  managed by `GmOverridesPanel.svelte`.
+  1. PLAYER VISIBILITY (NPC/Monster only)
+     A <select> controlling `character.playerVisibility`:
+       hidden     — NPC not shown to players (default)
+       name       — stub with name, playerName, posterUrl
+       name_level — stub + classLevels
+       full       — full character data, read-only for player
+     Saved automatically via the engine auto-save effect.
 
-  USAGE:
-    Only render when `sessionContext.isGameMaster` is true. The component enforces
-    no role check internally — gate it in the parent.
+  2. PER-CHARACTER GM OVERRIDES (all characters)
+     JSON textarea for `gmOverrides` (ActiveFeatureInstance[]).
+     Saved explicitly via PUT /api/characters/{id}/gm-overrides.
 
+  USAGE: Only render when sessionContext.isGameMaster is true.
   Props: (none — reads from engine.character directly)
 -->
 
@@ -126,7 +129,7 @@
   }
 </script>
 
-<!-- ── GM PER-CHARACTER OVERRIDES ─────────────────────────────────────────── -->
+<!-- ── GM PER-CHARACTER CONTROLS ──────────────────────────────────────────── -->
 <section class="card p-4 flex flex-col gap-3">
 
   <!-- Header -->
@@ -135,6 +138,39 @@
     <span>{ui('gm.per_char_overrides', lang)}</span>
   </div>
 
+  <!-- ── PLAYER VISIBILITY (NPC/Monster only) ────────────────────────────── -->
+  {#if engine.character.isNPC}
+    <div class="flex flex-col gap-1.5 pb-3 border-b border-border">
+      <label
+        for="npc-player-visibility"
+        class="text-xs font-semibold uppercase tracking-wider text-text-muted"
+      >
+        {ui('gm.player_visibility', lang)}
+      </label>
+      <select
+        id="npc-player-visibility"
+        class="select text-sm"
+        value={engine.character.playerVisibility ?? 'hidden'}
+        onchange={(e) =>
+          engine.setPlayerVisibility(
+            (e.target as HTMLSelectElement).value as
+              'hidden' | 'name' | 'name_level' | 'full'
+          )
+        }
+        aria-label={ui('gm.player_visibility', lang)}
+      >
+        <option value="hidden">{ui('gm.player_visibility_hidden',     lang)}</option>
+        <option value="name">{ui('gm.player_visibility_name',         lang)}</option>
+        <option value="name_level">{ui('gm.player_visibility_name_level', lang)}</option>
+        <option value="full">{ui('gm.player_visibility_full',         lang)}</option>
+      </select>
+      <p class="text-xs text-text-muted leading-relaxed">
+        {ui('gm.player_visibility_help', lang)}
+      </p>
+    </div>
+  {/if}
+
+  <!-- ── PER-CHARACTER GM OVERRIDES ─────────────────────────────────────── -->
   <p class="text-xs text-text-muted leading-relaxed">
     {ui('gm.override_help', lang)}
   </p>

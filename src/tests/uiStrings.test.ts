@@ -401,6 +401,35 @@ describe('UI_STRINGS', () => {
       }
     }
   });
+
+  it('gm.player_visibility* keys: all present and non-empty strings', () => {
+    // These keys drive the NPC/Monster player-visibility selector in
+    // GmCharacterOverridesPanel.svelte.  One key per label/option/help text.
+    const keys = [
+      'gm.player_visibility',
+      'gm.player_visibility_help',
+      'gm.player_visibility_hidden',
+      'gm.player_visibility_name',
+      'gm.player_visibility_name_level',
+      'gm.player_visibility_full',
+    ] as const;
+    for (const key of keys) {
+      expect(typeof UI_STRINGS[key], `key "${key}" is missing`).toBe('string');
+      expect((UI_STRINGS[key] as string).length, `key "${key}" is empty`).toBeGreaterThan(0);
+    }
+  });
+
+  it('gm.player_visibility* option labels are all distinct', () => {
+    // Each of the four option labels must differ so players/GMs can tell them apart.
+    const labels = [
+      UI_STRINGS['gm.player_visibility_hidden'],
+      UI_STRINGS['gm.player_visibility_name'],
+      UI_STRINGS['gm.player_visibility_name_level'],
+      UI_STRINGS['gm.player_visibility_full'],
+    ];
+    const unique = new Set(labels);
+    expect(unique.size).toBe(4);
+  });
 });
 
 // =============================================================================

@@ -121,30 +121,68 @@ class SyncTest extends TestCase
     // SYNC-STATUS ENDPOINT TESTS
     // ============================================================
 
-    /**
-     * GET /api/campaigns/{id}/sync-status returns campaignUpdatedAt and characterTimestamps.
-     * CHECKPOINTS.md Phase 16.6: "Test that GET /campaigns/{id}/sync-status returns correct timestamps."
-     */
-    public function testSyncStatusReturnsCorrectPayload(): void
-    {
-        $this->simulateLogin(self::GM_ID, true);
+/**
+ * GET /api/campaigns/{id}/sync-status returns campaignUpdatedAt, characterTimestamps,
+ * and rulesHash (added for batch-cache invalidation via polling).
+ * CHECKPOINTS.md Phase 16.6: "Test that GET /campaigns/{id}/sync-status returns correct timestamps."
+ */
+public function testSyncStatusReturnsCorrectPayload(): void
+{
+    $this->simulateLogin(self::GM_ID, true);
 
-        // Use $m variable trick since syncStatus expects a string $id (not from URL)
-        $response = $this->callController(fn() => CampaignController::syncStatus(self::CAMP_ID));
+    $response = $this->callController(fn() => CampaignController::syncStatus(self::CAMP_ID));
 
-        $this->assertEquals(200, $response['status']);
-        $this->assertArrayHasKey('campaignUpdatedAt', $response['body'],
-            'Response must contain campaignUpdatedAt');
-        $this->assertArrayHasKey('characterTimestamps', $response['body'],
-            'Response must contain characterTimestamps');
+    $this->assertEquals(200, $response['status']);
+    $this->assertArrayHasKey('campaignUpdatedAt', $response['body'],
+        'Response must contain campaignUpdatedAt');
+    $this->assertArrayHasKey('characterTimestamps', $response['body'],
+        'Response must contain characterTimestamps');
 
-        // Timestamps should be positive integers
-        $this->assertIsInt($response['body']['campaignUpdatedAt']);
-        $this->assertGreaterThan(0, $response['body']['campaignUpdatedAt']);
+    // Timestamps should be positive integers
+    $this->assertIsInt($response['body']['campaignUpdatedAt']);
+    $this->assertGreaterThan(0, $response['body']['campaignUpdatedAt']);
 
-        // Should have character timestamps
-        $this->assertIsArray($response['body']['characterTimestamps']);
-    }
+    // Should have character timestamps
+    $this->assertIsArray($response['body']['characterTimestamps']);
+}
+
+/**
+ * GET /api/campaigns/{id}/sync-status includes rulesHash for polling-based cache
+ * invalidation. The hash must be a non-empty 32-character hex string (MD5).
+ */
+public function testSyncStatusIncludesRulesHash(): void
+{
+    $this->simulateLogin(self::GM_ID, true);
+
+    $response = $this->callController(fn() => CampaignController::syncStatus(self::CAMP_ID));
+
+    $this->assertEquals(200, $response['status']);
+    $this->assertArrayHasKey('rulesHash', $response['body'],
+        'sync-status response must include rulesHash for batch-cache invalidation');
+
+    $rulesHash = $response['body']['rulesHash'];
+    $this->assertIsString($rulesHash, 'rulesHash must be a string');
+    $this->assertMatchesRegularExpression('/^[0-9a-f]{32}$/', $rulesHash,
+        'rulesHash must be a 32-character lowercase hex string (MD5)');
+}
+
+/**
+ * rulesHash is consistent: two consecutive calls to sync-status return the same hash
+ * when no rule files have changed between calls.
+ */
+public function testSyncStatusRulesHashIsStable(): void
+{
+    $this->simulateLogin(self::GM_ID, true);
+
+    $r1 = $this->callController(fn() => CampaignController::syncStatus(self::CAMP_ID));
+    $r2 = $this->callController(fn() => CampaignController::syncStatus(self::CAMP_ID));
+
+    $this->assertEquals(
+        $r1['body']['rulesHash'],
+        $r2['body']['rulesHash'],
+        'rulesHash must be stable when rule files are unchanged between polls'
+    );
+}
 
     /**
      * sync-status for GM includes ALL character timestamps (CHAR1 + CHAR2/NPC).

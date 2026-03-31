@@ -149,20 +149,9 @@
 
    // ===========================================================================
    // BANNER IMAGE STATE
+   // Fetched lazily from GET /api/campaigns/{id} (the list endpoint omits it).
+   // Cached in sessionStorage keyed by `{campaignId}:{updatedAt}`.
    // ===========================================================================
-   //
-   // WHY A SEPARATE FETCH INSTEAD OF READING campaign.bannerImageData?
-   //   GET /api/campaigns (list) excludes banner_image_data to keep the
-   //   campaign-hub response fast. Only GET /api/campaigns/{id} (show) returns it.
-   //   Once loaded, the data URI is cached in sessionStorage keyed by
-   //   `{campaignId}:{updatedAt}` so subsequent visits don't re-fetch.
-   //
-   // FLOW:
-   //   1. $effect runs when `campaign` first loads from the store.
-   //   2. Check sessionStorage cache. Hit → use cached value (no network call).
-   //   3. Miss → fetch GET /api/campaigns/{id}, extract bannerImageData, cache it.
-   //   4. On save: include bannerImageData in PUT body; update cache with new updatedAt.
-   //   5. On remove: send null in PUT; evict all cache entries for this campaign.
 
    let editableBannerImageData: string | null = $state(null);
    let savedBannerImageData:   string | null = $state(null);
@@ -610,17 +599,7 @@
   }
 </script>
 
-<!--
-  PAGE ROOT
-
-  Full-height column layout — matches the pattern used by the character sheet
-  (src/routes/character/[id]/+page.svelte) so the tab bar stays visible as the
-  user scrolls through long panels.
-
-    [PageHeader — sticky top-0]
-    [Tab bar    — sticky, just below the header]
-    [Tab content — flex-1, overflow-y-auto]
--->
+<!-- Full-height column: sticky header + sticky tab bar + scrollable content -->
 <div class="h-full flex flex-col bg-surface overflow-hidden">
 
   <!-- =========================================================================
@@ -647,12 +626,7 @@
     {/snippet}
   </PageHeader>
 
-  <!-- =========================================================================
-       TAB NAVIGATION BAR
-       `shrink-0` — never compressed by the scrollable content below.
-       `overflow-x-auto scrollbar-none` — all 6 tabs reachable on narrow screens.
-       `snap-x snap-mandatory` — smooth swipe on touch devices.
-  ========================================================================= -->
+  <!-- TAB NAVIGATION BAR — shrink-0, overflow-x-auto, snap-x for touch -->
   <div
     class="shrink-0 flex overflow-x-auto bg-surface border-b border-border
            snap-x snap-mandatory scrollbar-none"
@@ -685,10 +659,7 @@
         title={ui(tab.labelKey, lang)}
       >
         <tab.icon size={18} aria-hidden="true" />
-        <!--
-          Label: visible on md+ screens, hidden on mobile to keep buttons
-          compact. The icon alone is sufficient affordance on small screens.
-        -->
+        <!-- Label hidden on mobile — icon alone suffices on small screens -->
         <span class="hidden md:inline">{ui(tab.labelKey, lang)}</span>
         {#if tabDirtyMap[tab.key]}
           <span class="text-xs font-normal text-amber-400/80" aria-hidden="true">●</span>
@@ -697,13 +668,7 @@
     {/each}
   </div>
 
-  <!-- =========================================================================
-       TAB CONTENT AREA
-       `flex-1 overflow-y-auto` — fills remaining viewport height and scrolls
-       within that space, so the header + tab bar are always visible.
-       `p-4 xl:p-6` — consistent inner padding; slightly more generous on wide
-       screens where layout space is plentiful.
-  ========================================================================= -->
+  <!-- TAB CONTENT AREA — flex-1 overflow-y-auto, p-4 xl:p-6 -->
   <div
     class="flex-1 overflow-y-auto p-4 xl:p-6"
     role="tabpanel"

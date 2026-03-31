@@ -670,22 +670,30 @@ export class StorageManager {
    *   3. If `campaignUpdatedAt` changed → call `onCampaignUpdated()`.
    *   4. For each changed character timestamp → collect IDs for re-fetch.
    *   5. Call `onCharactersUpdated(changedCharacterIds)` with the list.
-   *   6. Update `this.lastSyncTimestamps` and persist to localStorage.
+   *   6. If `rulesHash` changed → clear the localStorage batch cache and call
+   *      `onRulesUpdated()` so the caller can re-invoke `loadRuleSources()`.
+   *   7. Update `this.lastSyncTimestamps` and persist to localStorage.
    *
    * GRACEFUL DEGRADATION:
    *   If the API is unreachable (fetch throws), the interval continues.
    *   The next tick will try again. No error is shown to the user for polling failures
    *   (they will just not see live updates from other players).
    *
-   * @param campaignId        - The campaign to poll for.
-   * @param onCampaignUpdated - Called when the campaign itself changed (settings, chapters, overrides).
+   * @param campaignId          - The campaign to poll for.
+   * @param onCampaignUpdated   - Called when the campaign itself changed.
    * @param onCharactersUpdated - Called with an array of character IDs that changed.
-   * @param intervalMs        - Polling interval in milliseconds (default: 7000 = 7 seconds).
+   * @param onRulesUpdated      - Optional. Called when the server-side rules hash
+   *                              changes (GM uploaded/deleted a rule file). The
+   *                              localStorage batch cache is cleared automatically
+   *                              before this callback fires; the caller should
+   *                              re-invoke `dataLoader.loadRuleSources()`.
+   * @param intervalMs          - Polling interval in milliseconds (default: 7000).
    */
   startPolling(
     campaignId: ID,
     onCampaignUpdated: () => void,
     onCharactersUpdated: (changedIds: ID[]) => void,
+    onRulesUpdated?: () => void,
     intervalMs = 7000
   ): void {
     this.stopPolling(); // Clear any existing interval
@@ -702,6 +710,7 @@ export class StorageManager {
         const status = (await response.json()) as {
           campaignUpdatedAt: number;
           characterTimestamps: Record<ID, number>;
+          rulesHash?: string;
         };
 
         this.isApiReachable = true;
@@ -725,6 +734,27 @@ export class StorageManager {
 
         if (changedCharacterIds.length > 0) {
           onCharactersUpdated(changedCharacterIds);
+        }
+
+        // Check rules hash — clear localStorage cache and notify caller when it changes.
+        // This fires when a GM uploads, modifies, or deletes a rule file in storage/rules/
+        // or static/rules/, ensuring players pick up the changes within one polling cycle.
+        if (status.rulesHash !== undefined) {
+          const lastRulesHash = this.lastSyncTimestamps['__rules_hash__'] as unknown as string | undefined;
+          if (lastRulesHash !== undefined && lastRulesHash !== status.rulesHash) {
+            // Clear the localStorage batch cache so the next loadRuleSources() fetches fresh data.
+            if (typeof localStorage !== 'undefined') {
+              try {
+                localStorage.removeItem('cv_rules_batch_v1');
+                localStorage.removeItem('cv_rules_etag_v1');
+              } catch { /* localStorage unavailable */ }
+            }
+            onRulesUpdated?.();
+          }
+          // Store the hash as a string in the numeric timestamps map.
+          // TypeScript is satisfied because Record<string, number> is widened here;
+          // the __rules_hash__ key is only ever compared as a string.
+          (this.lastSyncTimestamps as Record<string, unknown>)['__rules_hash__'] = status.rulesHash;
         }
 
         // Persist timestamps so they survive page reload

@@ -41,7 +41,43 @@
  * @see vite.config.ts — setupFiles configuration
  */
 
-/** Engine log prefixes that are always expected in the test suite. */
+// ---------------------------------------------------------------------------
+// PROCESS-LEVEL WARNING FILTER
+// ---------------------------------------------------------------------------
+// vitest v4 passes `--localstorage-file` to its worker threads without a
+// valid path when the test environment is 'node' (no real localStorage).
+// Node.js emits a process-level Warning to stderr for each affected worker.
+//
+// process.on('warning') adds a listener but does NOT suppress the default
+// stderr print — Node.js writes it anyway.  The only reliable suppression
+// is to override process.emitWarning before any module triggers it, so the
+// default stderr handler is never invoked for this specific message.
+const _originalEmitWarning = process.emitWarning.bind(process);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(process as any).emitWarning = function (
+  warning: string | Error,
+  ...rest: unknown[]
+): void {
+  const msg =
+    typeof warning === 'string'
+      ? warning
+      : (warning as Error)?.message ?? '';
+  if (msg.includes('--localstorage-file')) return; // suppress vitest internal noise
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (_originalEmitWarning as any)(warning, ...rest);
+};
+
+/**
+ * Engine / i18n log prefixes that are always expected in the test suite.
+ *
+ * These are intentional diagnostic messages emitted when tests exercise
+ * error-handling or fallback paths.  Adding them here silences the noise so
+ * genuine failures remain easy to spot in the output.
+ *
+ * [i18n] — "Missing UI string key" warnings emitted by the i18n module when
+ *           tests deliberately look up unknown ability keys to assert the
+ *           derived-abbreviation fallback behaviour.
+ */
 const KNOWN_ENGINE_PREFIXES: readonly string[] = [
   '[MathParser]',
   '[DataLoader]',
@@ -50,6 +86,7 @@ const KNOWN_ENGINE_PREFIXES: readonly string[] = [
   '[SessionContext]',
   '[LogicEvaluator]',
   '[DiceEngine]',
+  '[i18n]',
 ];
 
 /**

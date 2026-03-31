@@ -4,7 +4,8 @@
  *
  * The DataLoader has two distinct layers:
  *   1. ASYNC LAYER  — loadRuleSources() / #loadRuleFile() — makes fetch() calls.
- *                     These are NOT tested here (require HTTP mocking).
+ *                     Batch path (#tryLoadRulesBatch) and cache (clearBatchCache)
+ *                     are tested via fetch + localStorage mocking.
  *   2. SYNC LAYER   — cacheFeature(), getFeature(), queryFeatures(), processEntity
  *                     via applyGmOverrides(), clearCache() — fully testable.
  *
@@ -1815,5 +1816,387 @@ describe('DataLoader — registerLanguagesFromValue()', () => {
     loader.registerLanguagesFromValue('string');
     expect(loader.localesVersion).toBe(v0); // no change
     expect(loader.getAvailableLanguages()).toEqual(['en']);
+  });
+});
+
+// =============================================================================
+// BATCH LOADER — #tryLoadRulesBatch, #processBatchData, clearBatchCache, #saveBatchCache
+// =============================================================================
+
+/**
+ * Minimal localStorage mock (same shape used in storageManager.test.ts).
+ */
+function makeLsMock() {
+  const store = new Map<string, string>();
+  return {
+    getItem:    (k: string) => store.get(k) ?? null,
+    setItem:    (k: string, v: string) => { store.set(k, v); },
+    removeItem: (k: string) => { store.delete(k); },
+    clear:      () => { store.clear(); },
+    key:        (i: number) => Array.from(store.keys())[i] ?? null,
+    get length() { return store.size; },
+    // Test helpers
+    _store: store,
+  };
+}
+
+/** Builds a minimal batch response payload. */
+function makeBatchResponse(etag = 'etag-abc', extras?: {
+  staticFiles?: Record<string, unknown>;
+  globalFiles?: Record<string, unknown>;
+}) {
+  return {
+    etag,
+    staticFiles: extras?.staticFiles ?? {
+      '00_core/races.json': wrapEntities([
+        { id: 'race_human', category: 'race', ruleSource: 'srd_core',
+          label: { en: 'Human' }, grantedModifiers: [], grantedFeatures: [], tags: [] },
+      ]),
+    },
+    globalFiles: extras?.globalFiles ?? {},
+  };
+}
+
+describe('DataLoader — batch loader (#tryLoadRulesBatch)', () => {
+  afterEach(() => { vi.unstubAllGlobals(); });
+
+  it('processes entities from a 200 batch response', async () => {
+    const loader = new DataLoader();
+    const ls = makeLsMock();
+    vi.stubGlobal('localStorage', ls);
+
+    vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) => {
+      if (url === '/api/rules/batch') {
+        return Promise.resolve({
+          ok: true,
+          status: 200,
+          json: () => Promise.resolve(makeBatchResponse()),
+        });
+      }
+      // Fallback paths should NOT be reached
+      return Promise.resolve({ ok: true, headers: { get: () => 'application/json' }, json: () => Promise.resolve([]) });
+    }));
+
+    await loader.loadRuleSources([]);
+
+    // Entity was loaded from batch
+    expect(loader.getFeature('race_human')).toBeTruthy();
+    expect(loader.getFeature('race_human')?.label).toEqual({ en: 'Human' });
+  });
+
+  it('writes full batch response to localStorage on 200', async () => {
+    const loader = new DataLoader();
+    const ls = makeLsMock();
+    vi.stubGlobal('localStorage', ls);
+
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true, status: 200,
+      json: () => Promise.resolve(makeBatchResponse('etag-123')),
+    }));
+
+    await loader.loadRuleSources([]);
+
+    const cached = ls.getItem('cv_rules_batch_v1');
+    expect(cached).not.toBeNull();
+    const parsed = JSON.parse(cached!);
+    expect(parsed.etag).toBe('etag-123');
+    expect(parsed.staticFiles).toBeDefined();
+    expect(parsed.globalFiles).toBeDefined();
+  });
+
+  it('uses localStorage cache on 304 Not Modified', async () => {
+    const loader = new DataLoader();
+    const ls = makeLsMock();
+    vi.stubGlobal('localStorage', ls);
+
+    // Pre-populate cache
+    ls.setItem('cv_rules_batch_v1', JSON.stringify(makeBatchResponse('etag-cached')));
+
+    let fetchCallCount = 0;
+    vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) => {
+      fetchCallCount++;
+      if (url === '/api/rules/batch') {
+        return Promise.resolve({ ok: false, status: 304 });
+      }
+      return Promise.resolve({ ok: true, headers: { get: () => 'application/json' }, json: () => Promise.resolve([]) });
+    }));
+
+    await loader.loadRuleSources([]);
+
+    // Entity was loaded from cache
+    expect(loader.getFeature('race_human')).toBeTruthy();
+    // Only the batch endpoint was called (the 304 path — no individual fetches)
+    expect(fetchCallCount).toBe(1);
+  });
+
+  it('sends If-None-Match header when ETag is cached', async () => {
+    const loader = new DataLoader();
+    const ls = makeLsMock();
+    vi.stubGlobal('localStorage', ls);
+
+    ls.setItem('cv_rules_batch_v1', JSON.stringify(makeBatchResponse('etag-xyz')));
+
+    const fetchMock = vi.fn().mockResolvedValue({ ok: false, status: 304 });
+    vi.stubGlobal('fetch', fetchMock);
+
+    await loader.loadRuleSources([]);
+
+    const [, options] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect((options?.headers as Record<string, string>)['If-None-Match']).toBe('"etag-xyz"');
+  });
+
+  it('does NOT send If-None-Match when no cache exists', async () => {
+    const loader = new DataLoader();
+    const ls = makeLsMock();
+    vi.stubGlobal('localStorage', ls);
+
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true, status: 200,
+      json: () => Promise.resolve(makeBatchResponse()),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    await loader.loadRuleSources([]);
+
+    const [, options] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect((options?.headers as Record<string, string>)?.['If-None-Match']).toBeUndefined();
+  });
+
+  it('falls back to individual fetches when batch returns 404', async () => {
+    const loader = new DataLoader();
+    vi.stubGlobal('localStorage', makeLsMock());
+
+    const fetchMock = vi.fn().mockImplementation((url: string) => {
+      if (url === '/api/rules/batch') {
+        return Promise.resolve({ ok: false, status: 404 });
+      }
+      // Individual fallback: /rules discovery → empty list
+      if (url === '/rules') {
+        return Promise.resolve({
+          ok: true,
+          headers: { get: () => 'application/json' },
+          json: () => Promise.resolve([]),
+        });
+      }
+      // /api/global-rules → empty list
+      return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve([]) });
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    await loader.loadRuleSources([]);
+
+    // Batch was tried; fallback path fetched /rules
+    const urls = (fetchMock.mock.calls as [string][]).map(([u]) => u);
+    expect(urls).toContain('/api/rules/batch');
+    expect(urls).toContain('/rules');
+  });
+
+  it('falls back to individual fetches when batch throws (no backend)', async () => {
+    const loader = new DataLoader();
+    vi.stubGlobal('localStorage', makeLsMock());
+
+    const fetchMock = vi.fn().mockImplementation((url: string) => {
+      if (url === '/api/rules/batch') {
+        return Promise.reject(new Error('Connection refused'));
+      }
+      if (url === '/rules') {
+        return Promise.resolve({
+          ok: true,
+          headers: { get: () => 'application/json' },
+          json: () => Promise.resolve([]),
+        });
+      }
+      return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve([]) });
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    // Should not throw
+    await expect(loader.loadRuleSources([])).resolves.toBeUndefined();
+
+    const urls = (fetchMock.mock.calls as [string][]).map(([u]) => u);
+    expect(urls).toContain('/api/rules/batch');
+    expect(urls).toContain('/rules'); // fallback activated
+  });
+
+  it('applies enabledFilePaths filter in batch mode', async () => {
+    const loader = new DataLoader();
+    vi.stubGlobal('localStorage', makeLsMock());
+
+    const batch = makeBatchResponse('etag-filter', {
+      staticFiles: {
+        '00_core/races.json':    wrapEntities([{ id: 'race_human',  category: 'race', ruleSource: 'srd_core', label: { en: 'Human' },  grantedModifiers: [], grantedFeatures: [], tags: [] }]),
+        '01_psionics/psions.json': wrapEntities([{ id: 'class_psion', category: 'class', ruleSource: 'srd_psionics', label: { en: 'Psion' }, grantedModifiers: [], grantedFeatures: [], tags: [] }]),
+      },
+    });
+
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true, status: 200, json: () => Promise.resolve(batch),
+    }));
+
+    // Only enable the races file
+    await loader.loadRuleSources(['00_core/races.json']);
+
+    expect(loader.getFeature('race_human')).toBeTruthy();
+    expect(loader.getFeature('class_psion')).toBeUndefined(); // filtered out
+  });
+
+  it('registers supportedLanguages from batch response', async () => {
+    const loader = new DataLoader();
+    vi.stubGlobal('localStorage', makeLsMock());
+
+    const batch = {
+      etag: 'etag-lang',
+      staticFiles: {
+        '00_core/config.json': {
+          supportedLanguages: ['en', 'fr', 'de'],
+          entities: [{ id: 'cfg_x', category: 'config', ruleSource: 'srd_core',
+            label: { en: 'X', fr: 'X', de: 'X' }, grantedModifiers: [], grantedFeatures: [], tags: [] }],
+        },
+      },
+      globalFiles: {},
+    };
+
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true, status: 200, json: () => Promise.resolve(batch),
+    }));
+
+    await loader.loadRuleSources([]);
+
+    expect(loader.getAvailableLanguages()).toContain('fr');
+    expect(loader.getAvailableLanguages()).toContain('de');
+  });
+
+  it('marks global-file ruleSource IDs as homebrew', async () => {
+    const loader = new DataLoader();
+    vi.stubGlobal('localStorage', makeLsMock());
+
+    const batch = makeBatchResponse('etag-global', {
+      globalFiles: {
+        '50_my_setting.json': wrapEntities([
+          { id: 'feat_custom', category: 'feat', ruleSource: 'my_homebrew',
+            label: { en: 'Custom Feat' }, grantedModifiers: [], grantedFeatures: [], tags: [] },
+        ]),
+      },
+    });
+
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true, status: 200, json: () => Promise.resolve(batch),
+    }));
+
+    await loader.loadRuleSources([]);
+
+    // Global-scope homebrew should be retrievable as 'global' homebrew
+    const globalHomebrew = loader.getHomebrewRules('global');
+    expect(globalHomebrew.some(f => f.id === 'feat_custom')).toBe(true);
+  });
+
+  it('re-fetches fresh 200 when 304 but cache data is missing (ETag-only scenario)', async () => {
+    const loader = new DataLoader();
+    const ls = makeLsMock();
+    vi.stubGlobal('localStorage', ls);
+
+    // Simulate the quota-exceeded scenario: only ETag stored, not full data
+    ls.setItem('cv_rules_etag_v1', 'etag-etag-only');
+
+    let callCount = 0;
+    vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) => {
+      callCount++;
+      if (url === '/api/rules/batch') {
+        // First call (with If-None-Match) → 304; second call (fresh) → 200
+        if (callCount === 1) return Promise.resolve({ ok: false, status: 304 });
+        return Promise.resolve({
+          ok: true, status: 200,
+          json: () => Promise.resolve(makeBatchResponse('etag-fresh')),
+        });
+      }
+      return Promise.resolve({ ok: true, headers: { get: () => 'application/json' }, json: () => Promise.resolve([]) });
+    }));
+
+    await loader.loadRuleSources([]);
+
+    // Entity loaded from fresh 200
+    expect(loader.getFeature('race_human')).toBeTruthy();
+  });
+});
+
+describe('DataLoader — clearBatchCache()', () => {
+  afterEach(() => { vi.unstubAllGlobals(); });
+
+  it('removes both cv_rules_batch_v1 and cv_rules_etag_v1 from localStorage', () => {
+    const ls = makeLsMock();
+    vi.stubGlobal('localStorage', ls);
+
+    ls.setItem('cv_rules_batch_v1', '{"etag":"x","staticFiles":{},"globalFiles":{}}');
+    ls.setItem('cv_rules_etag_v1', 'x');
+
+    DataLoader.clearBatchCache();
+
+    expect(ls.getItem('cv_rules_batch_v1')).toBeNull();
+    expect(ls.getItem('cv_rules_etag_v1')).toBeNull();
+  });
+
+  it('does not throw when localStorage is unavailable', () => {
+    vi.stubGlobal('localStorage', undefined);
+    expect(() => DataLoader.clearBatchCache()).not.toThrow();
+  });
+
+  it('does not throw when keys do not exist', () => {
+    const ls = makeLsMock();
+    vi.stubGlobal('localStorage', ls);
+    // Keys were never set — should silently succeed
+    expect(() => DataLoader.clearBatchCache()).not.toThrow();
+    expect(ls.getItem('cv_rules_batch_v1')).toBeNull();
+  });
+});
+
+describe('DataLoader — #saveBatchCache (localStorage quota handling)', () => {
+  afterEach(() => { vi.unstubAllGlobals(); });
+
+  it('stores etag-only key when full-data write throws QuotaExceededError', async () => {
+    const ls = makeLsMock();
+    // Make setItem throw on first call (simulating quota exceeded for full data),
+    // but succeed on the second call (for ETag-only fallback).
+    let setItemCallCount = 0;
+    const originalSetItem = ls.setItem.bind(ls);
+    vi.spyOn(ls, 'setItem').mockImplementation((k: string, v: string) => {
+      setItemCallCount++;
+      if (setItemCallCount === 1) throw new DOMException('QuotaExceededError');
+      originalSetItem(k, v);
+    });
+    vi.stubGlobal('localStorage', ls);
+
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true, status: 200,
+      json: () => Promise.resolve(makeBatchResponse('etag-quota')),
+    }));
+
+    const loader = new DataLoader();
+    await loader.loadRuleSources([]);
+
+    // Full data was NOT stored (threw) but ETag was stored on second attempt
+    expect(ls.getItem('cv_rules_batch_v1')).toBeNull();
+    expect(ls.getItem('cv_rules_etag_v1')).toBe('etag-quota');
+  });
+
+  it('removes ETag-only key when full-data write succeeds', async () => {
+    const ls = makeLsMock();
+    vi.stubGlobal('localStorage', ls);
+
+    // ETag-only key exists from a previous quota-exceeded run
+    ls.setItem('cv_rules_etag_v1', 'old-etag');
+
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true, status: 200,
+      json: () => Promise.resolve(makeBatchResponse('fresh-etag')),
+    }));
+
+    const loader = new DataLoader();
+    await loader.loadRuleSources([]);
+
+    // Full data was written; ETag-only key was cleaned up
+    const full = ls.getItem('cv_rules_batch_v1');
+    expect(full).not.toBeNull();
+    expect(JSON.parse(full!).etag).toBe('fresh-etag');
+    expect(ls.getItem('cv_rules_etag_v1')).toBeNull();
   });
 });
