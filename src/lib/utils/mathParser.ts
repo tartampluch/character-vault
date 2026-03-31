@@ -213,6 +213,15 @@ export function resolvePath(path: string, context: CharacterContext): unknown {
     return context.eclForXp;
   }
 
+  // Handle @targetTags → empty array at sheet time, populated at roll time.
+  // `context.targetTags` is optional (only set by the Dice Engine during a roll).
+  // At sheet-computation time it is undefined; returning [] prevents the generic
+  // path walker from emitting a "resolved to undefined → 0" warning and avoids
+  // the subsequent `has_tag` type-error (number instead of array).
+  if (parts[0] === 'targetTags') {
+    return context.targetTags ?? [];
+  }
+
   // Handle @constant.<id> → context.constants[id]
   // ARCHITECTURE.md section 4.3: `@constant.<id>` resolves named constants.
   // The context field is `constants` (plural) but the path prefix is `constant` (singular).

@@ -104,6 +104,16 @@ export function setCsrfToken(token: string): void {
 }
 
 /**
+ * Returns true when the CSRF token has been populated from GET /api/auth/me.
+ * Used by mutating API methods to skip the request when the token is absent,
+ * preventing a guaranteed 403 (and the side-effect of marking the API as unreachable)
+ * during the brief window between page load and session bootstrap.
+ */
+export function hasCsrfToken(): boolean {
+  return csrfToken !== null;
+}
+
+/**
  * Returns headers for API requests, including CSRF and Content-Type.
  * Exported so other stores (e.g. HomebrewStore) can share the same CSRF token
  * without duplicating the token-management logic.
@@ -396,6 +406,8 @@ export class StorageManager {
     // Always persist locally first so the UI is responsive offline.
     this.saveCharacter(char);
 
+    if (!hasCsrfToken()) return;
+
     try {
       const response = await fetch('/api/characters', {
         method: 'POST',
@@ -423,6 +435,8 @@ export class StorageManager {
   async createTemplateOnApi(tmpl: Character): Promise<void> {
     // Persist locally as a regular character entry so the editor works offline.
     this.saveCharacter(tmpl);
+
+    if (!hasCsrfToken()) return;
 
     try {
       const response = await fetch('/api/templates', {
@@ -455,6 +469,13 @@ export class StorageManager {
     // Always save to localStorage as a local cache (offline fallback)
     this.saveCharacter(char);
 
+    // Skip the API call if the CSRF token has not been populated yet.
+    // This prevents a guaranteed 403 (and isApiReachable = false) during the
+    // brief window between page load and GET /api/auth/me completing.
+    // The character is already persisted locally above; the next auto-save
+    // triggered after the token is set will sync the data to the server.
+    if (!hasCsrfToken()) return;
+
     try {
       const response = await fetch(`/api/characters/${char.id}`, {
         method: 'PUT',
@@ -483,6 +504,8 @@ export class StorageManager {
    */
   async saveTemplateToApi(tmpl: Character): Promise<void> {
     this.saveCharacter(tmpl);
+
+    if (!hasCsrfToken()) return;
 
     try {
       const response = await fetch(`/api/templates/${tmpl.id}`, {

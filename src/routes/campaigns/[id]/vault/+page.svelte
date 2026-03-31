@@ -30,7 +30,7 @@
   import SpawnModal from '$lib/components/vault/SpawnModal.svelte';
   import { sidebarPinsStore } from '$lib/engine/SidebarPinsStore.svelte';
   import {
-    IconVault, IconAddCharacter, IconNPC, IconMonster, IconCampaign, IconSpawn,
+    IconVault, IconCampaign,
   } from '$lib/components/ui/icons';
   import PageHeader from '$lib/components/layout/PageHeader.svelte';
   import { getGmGlobalOverrides } from '$lib/api/serverSettingsApi';
@@ -209,25 +209,25 @@
 >
   {#snippet actions()}
     <!-- "+ Create New Character" — always visible to all users -->
-    <button class="btn-primary gap-1" onclick={createNewCharacter} type="button">
-      <IconAddCharacter size={16} aria-hidden="true" /> {ui('vault.create_character', engine.settings.language)}
+    <button class="btn-primary" onclick={createNewCharacter} type="button">
+      {ui('vault.create_character', engine.settings.language)}
     </button>
 
     <!-- GM-only spawn buttons -->
     {#if sessionContext.isGameMaster}
       <button
-        class="btn-secondary gap-1 text-red-400 border-red-800/60 hover:border-red-600"
+        class="btn-secondary text-red-400 border-red-800/60 hover:border-red-600"
         onclick={() => openSpawnModal('npc')}
         type="button"
       >
-        <IconNPC size={16} aria-hidden="true" /> {ui('vault.spawn_npc', engine.settings.language)}
+        {ui('vault.spawn_npc', engine.settings.language)}
       </button>
       <button
-        class="btn-secondary gap-1 text-orange-400 border-orange-800/60 hover:border-orange-600"
+        class="btn-secondary text-orange-400 border-orange-800/60 hover:border-orange-600"
         onclick={() => openSpawnModal('monster')}
         type="button"
       >
-        <IconMonster size={16} aria-hidden="true" /> {ui('vault.spawn_monster', engine.settings.language)}
+        {ui('vault.spawn_monster', engine.settings.language)}
       </button>
     {/if}
   {/snippet}
@@ -249,23 +249,23 @@
       </p>
       <!-- Empty-state CTAs mirror the header buttons -->
       <div class="flex gap-3 flex-wrap justify-center mt-2">
-        <button class="btn-primary gap-1 px-5 py-2.5" onclick={createNewCharacter} type="button">
-          <IconAddCharacter size={16} aria-hidden="true" /> {ui('vault.create_character', engine.settings.language)}
+        <button class="btn-primary px-5 py-2.5" onclick={createNewCharacter} type="button">
+          {ui('vault.create_character', engine.settings.language)}
         </button>
         {#if sessionContext.isGameMaster}
           <button
-            class="btn-secondary gap-1 px-5 py-2.5 text-red-400 border-red-800/60 hover:border-red-600"
+            class="btn-secondary px-5 py-2.5 text-red-400 border-red-800/60 hover:border-red-600"
             onclick={() => openSpawnModal('npc')}
             type="button"
           >
-            <IconNPC size={16} aria-hidden="true" /> {ui('vault.spawn_npc', engine.settings.language)}
+            {ui('vault.spawn_npc', engine.settings.language)}
           </button>
           <button
-            class="btn-secondary gap-1 px-5 py-2.5 text-orange-400 border-orange-800/60 hover:border-orange-600"
+            class="btn-secondary px-5 py-2.5 text-orange-400 border-orange-800/60 hover:border-orange-600"
             onclick={() => openSpawnModal('monster')}
             type="button"
           >
-            <IconMonster size={16} aria-hidden="true" /> {ui('vault.spawn_monster', engine.settings.language)}
+            {ui('vault.spawn_monster', engine.settings.language)}
           </button>
         {/if}
       </div>

@@ -424,9 +424,9 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
 
   // ── Spawn buttons (GM only, campaign vault) ───────────────────────────────
   /** Button in the campaign vault to spawn an NPC instance from a template. */
-  'vault.spawn_npc':                  '+ Spawn NPC',
+  'vault.spawn_npc':                  'Spawn NPC',
   /** Button in the campaign vault to spawn a Monster instance from a template. */
-  'vault.spawn_monster':              '+ Spawn Monster',
+  'vault.spawn_monster':              'Spawn Monster',
 
   // ── Spawn modal strings ───────────────────────────────────────────────────
   'vault.spawn_modal_title_npc':      'Spawn NPC',
