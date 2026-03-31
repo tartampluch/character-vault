@@ -163,12 +163,6 @@
   let loadState = $state<'loading' | 'ready' | 'not_found' | 'error'>('loading');
 
   /**
-   * Guard flag — plain boolean so it never creates a reactive dependency.
-   * Prevents rule sources from being loaded more than once per page visit.
-   */
-  let rulesLoadInitiated = false;
-
-  /**
    * Loads the character from the server whenever the URL ID changes.
    *
    * STRATEGY:
@@ -176,9 +170,23 @@
    *      This guarantees the UI shows the authoritative server version on
    *      every page load or direct URL navigation — no stale localStorage data.
    *   2. While the fetch is in flight, show a loading skeleton.
-   *   3. On success: engine.loadCharacter(serverChar), then load rule sources.
+   *   3. On success: engine.loadCharacter(serverChar), then load rule sources
+   *      if not already loaded, then reveal the character sheet.
    *   4. On 404/403: show a "character not found" message.
    *   5. On other error: show a generic error message.
+   *
+   * LOADING ORDER — WHY WE WAIT FOR RULES BEFORE SHOWING THE SHEET:
+   *   The character sheet's $derived DAG (skills, saves, combat stats) depends
+   *   on the DataLoader's feature cache. Revealing the sheet before the cache
+   *   is populated shows an "empty" character: no class/racial bonuses, no
+   *   skills seeded, saves at zero. Waiting for bumpDataLoaderVersion() ensures
+   *   the first visible render is complete and correct.
+   *
+   * ABORT PATTERN:
+   *   The cleanup function sets `aborted = true` before Svelte re-runs this
+   *   effect (e.g., if characterId changes mid-flight or in Svelte dev mode's
+   *   double-run). All async callbacks check `aborted` before mutating state,
+   *   preventing a stale load from overwriting a newer one's results.
    *
    * REACTIVE-CYCLE GUARD:
    *   engine.loadCharacter() writes engine.character ($state). We do NOT read
@@ -189,11 +197,12 @@
     const id = characterId;
     if (!id) return;
 
-    loadState        = 'loading';
-    rulesLoadInitiated = false; // allow rule sources to reload when ID changes
+    loadState = 'loading';
+    let aborted = false;
 
     storageManager.loadCharacterFromApi(id)
       .then(serverChar => {
+        if (aborted) return;
         if (!serverChar) {
           // 404 / 403 — character does not exist or is not accessible.
           loadState = 'not_found';
@@ -202,29 +211,53 @@
 
         engine.loadCharacter(serverChar);
         engine.registerCharacterInVault(serverChar);
-        loadState = 'ready';
 
-        // Load rule sources if not already loaded. Uses the character's campaign
-        // sources when available (the campaign may enable extra rule files).
-        if (!dataLoader.isLoaded && !rulesLoadInitiated) {
-          rulesLoadInitiated = true;
-          const camp = serverChar.campaignId
-            ? campaignStore.getCampaign(serverChar.campaignId)
-            : undefined;
-          const enabledSources = camp?.enabledRuleSources ?? engine.settings.enabledRuleSources;
-          getGmGlobalOverrides()
-            .then(gmOverrides => dataLoader.loadRuleSources(enabledSources, gmOverrides))
-            .then(() => engine.bumpDataLoaderVersion())
-            .catch(err => {
-              console.warn('[CharacterSheet] Failed to load rule sources:', err);
-              rulesLoadInitiated = false;
-            });
+        // ── Case 1: Rules are already loaded ─────────────────────────────
+        // Sync the engine's version counter so all $derived blocks that read
+        // dataLoaderVersion re-evaluate with the current (populated) cache.
+        // This is important when navigating between characters: the DataLoader
+        // is loaded from a previous visit, but loadCharacter() just replaced
+        // engine.character, so the derived chain must re-run to pick up the
+        // new character's bonuses from the already-populated feature cache.
+        if (dataLoader.isLoaded) {
+          engine.bumpDataLoaderVersion();
+          loadState = 'ready';
+          return;
         }
+
+        // ── Case 2: Rules not yet loaded ──────────────────────────────────
+        // Delay revealing the character sheet until rule sources are loaded
+        // and bumpDataLoaderVersion() has been called. This guarantees that
+        // the FIRST render of the sheet shows fully computed stats (class
+        // bonuses, racial bonuses, seeded skills, correct saving throws).
+        const camp = serverChar.campaignId
+          ? campaignStore.getCampaign(serverChar.campaignId)
+          : undefined;
+        const enabledSources = camp?.enabledRuleSources ?? engine.settings.enabledRuleSources;
+
+        getGmGlobalOverrides()
+          .then(gmOverrides => dataLoader.loadRuleSources(enabledSources, gmOverrides))
+          .then(() => {
+            if (aborted) return;
+            engine.bumpDataLoaderVersion();
+            loadState = 'ready';
+          })
+          .catch(err => {
+            console.warn('[CharacterSheet] Failed to load rule sources:', err);
+            // Graceful degradation: show the sheet even if rules failed to load.
+            // The user will see base stats without rule-derived bonuses.
+            if (!aborted) loadState = 'ready';
+          });
       })
       .catch(err => {
         console.error('[CharacterSheet] Failed to load character:', err);
-        loadState = 'error';
+        if (!aborted) loadState = 'error';
       });
+
+    // Cleanup: mark this run as superseded so its async callbacks do nothing.
+    // Svelte calls this before re-running the effect (e.g., on characterId
+    // change or in development mode's effect validation pass).
+    return () => { aborted = true; };
   });
 
   // ===========================================================================
@@ -311,6 +344,10 @@
         if (!char) { loadState = 'not_found'; return; }
         engine.loadCharacter(char);
         engine.registerCharacterInVault(char);
+        // Sync the version counter so derived blocks re-run with the reloaded
+        // character data. Rules are already loaded at this point (reload is only
+        // triggered by a 409 conflict after the sheet was already displayed).
+        engine.bumpDataLoaderVersion();
         loadState = 'ready';
       })
       .catch(() => { loadState = 'error'; });
