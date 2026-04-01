@@ -33,6 +33,11 @@
     return [] as string[];
   });
 
+  // Point Buy and Roll Stats are only available during character creation
+  // (before any level-up has been committed). Once minimumSkillRanks are set,
+  // the character's ability scores should not be wholesale overwritten.
+  const isCreation = $derived(engine.phase_isCharacterCreation);
+
   let breakdownPipelineId = $state<ID | null>(null);
   let diceRollPipelineId  = $state<ID | null>(null);
   let showPointBuy        = $state(false);
@@ -62,18 +67,20 @@
     </div>
     <div class="flex gap-2">
       <button
-        class="btn-secondary text-xs gap-1"
+        class="btn-secondary text-xs gap-1 disabled:opacity-40"
         onclick={() => (showPointBuy = true)}
         title={ui('abilities.point_buy_tooltip', engine.settings.language)}
         type="button"
+        disabled={!isCreation}
       >
         <IconTabFeats size={14} aria-hidden="true" /> {ui('abilities.point_buy', engine.settings.language)}
       </button>
       <button
-        class="btn-secondary text-xs gap-1"
+        class="btn-secondary text-xs gap-1 disabled:opacity-40"
         onclick={() => (showRollStats = true)}
         title={ui('abilities.roll_stats_tooltip', engine.settings.language)}
         type="button"
+        disabled={!isCreation}
       >
         <IconDiceRoll size={14} aria-hidden="true" /> {ui('abilities.roll_stats', engine.settings.language)}
       </button>

@@ -25802,6 +25802,116 @@
       "activation": {
         "actionType": "standard"
       }
+    },
+
+    {
+      "id": "spell_magic_stone",
+      "category": "magic",
+      "ruleSource": "srd_core",
+      "label": { "en": "Magic Stone", "fr": "Pierre magique" },
+      "description": {
+        "en": "You transmute as many as three pebbles, which can be no larger than sling bullets, so that they strike with great force when thrown or slung. If hurled, they have a range increment of 20 feet. If slung, treat them as sling bullets (range increment 50 feet). The spell gives them a +1 enhancement bonus on attack and damage rolls. Each stone deals 1d6+1 points of damage (including the spell's enhancement bonus), or 2d6+2 points against undead.",
+        "fr": "Vous transmuez jusqu'à trois cailloux, de la taille de billes de fronde au maximum, pour qu'ils frappent avec une grande force lorsqu'ils sont lancés ou utilisés avec une fronde. Si lancés à la main, ils ont un facteur de portée de 6 m. Si utilisés avec une fronde, traitez-les comme des billes de fronde (facteur de portée 15 m). Le sort leur confère un bonus d'altération de +1 aux jets d'attaque et de dégâts. Chaque pierre inflige 1d6+1 points de dégâts (y compris le bonus du sort), ou 2d6+2 points contre les morts-vivants."
+      },
+      "magicType": "divine",
+      "school": "transmutation",
+      "subSchool": "",
+      "descriptors": ["earth"],
+      "resistanceType": "none",
+      "components": ["V", "S", "DF"],
+      "spellLists": {
+        "list_cleric": 1,
+        "list_druid": 1
+      },
+      "range": "touch",
+      "targetArea": { "en": "Up to 3 pebbles touched", "fr": "Jusqu'à 3 cailloux au contact" },
+      "duration": "30 min. or until used",
+      "savingThrow": "none",
+      "tags": ["spell", "spell_transmutation", "earth"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "activation": { "actionType": "standard" },
+      "castEffect": {
+        "type": "spawn_weapons",
+        "weaponFeatureId": "item_magic_stone",
+        "count": 3,
+        "chargesPerWeapon": 1,
+        "durationHint": "30 min."
+      }
+    },
+
+    {
+      "id": "spell_spiritual_weapon",
+      "category": "magic",
+      "ruleSource": "srd_core",
+      "label": { "en": "Spiritual Weapon", "fr": "Arme spirituelle" },
+      "description": {
+        "en": "A weapon made of force springs into existence and attacks opponents at a distance, as you direct it, dealing 1d8 force damage per hit, +1 point per 3 caster levels (max +5 at 15th level). It uses your base attack bonus, strikes once per round as a free action, and can hit incorporeal creatures. The weapon attacks from your direction but does not threaten squares if you are not adjacent.",
+        "fr": "Une arme de force apparaît et attaque vos adversaires à distance, infligeant 1d8 dégâts de force par touche, +1 point par tranche de 3 niveaux (5 max au niveau 15). Elle utilise votre bonus d'attaque de base, frappe une fois par round par une action libre, et peut toucher les créatures intangibles. L'arme frappe depuis votre direction mais ne menace pas les cases si vous n'êtes pas adjacent."
+      },
+      "magicType": "divine",
+      "school": "evocation",
+      "subSchool": "force",
+      "descriptors": ["force"],
+      "resistanceType": "none",
+      "components": ["V", "S", "DF"],
+      "spellLists": {
+        "list_cleric": 2
+      },
+      "range": "medium",
+      "targetArea": { "en": "Magic weapon of force", "fr": "Arme de force magique" },
+      "duration": "1 round/level",
+      "savingThrow": "none",
+      "tags": ["spell", "spell_evocation", "force", "summoning"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "activation": { "actionType": "standard" },
+      "castEffect": {
+        "type": "summon_entity",
+        "entityType": "summon",
+        "bondingFeatureId": "spell_spiritual_weapon",
+        "entityTemplateId": "summon_template_spiritual_weapon",
+        "nameKey": "magic.summon.spiritual_weapon",
+        "durationHint": "1 round/level"
+      }
+    },
+
+    {
+      "id": "spell_summon_natures_ally_1",
+      "category": "magic",
+      "ruleSource": "srd_core",
+      "label": { "en": "Summon Nature's Ally I", "fr": "Allié de la nature I" },
+      "description": {
+        "en": "You summon a nature's ally to fight on your behalf. It appears where you designate and acts immediately, on your turn. It fights your opponents to the best of its ability. The summoned creature cannot summon others or use teleportation abilities.",
+        "fr": "Vous invoquez un allié de la nature pour combattre en votre nom. Il apparaît là où vous le désignez et agit immédiatement lors de votre tour. Il combat vos adversaires du mieux possible. La créature invoquée ne peut pas invoquer d'autres créatures ni utiliser les capacités de téléportation."
+      },
+      "magicType": "divine",
+      "school": "conjuration",
+      "subSchool": "summoning",
+      "descriptors": [],
+      "resistanceType": "none",
+      "components": ["V", "S", "DF"],
+      "spellLists": {
+        "list_cleric": 1,
+        "list_druid": 1,
+        "list_ranger": 1
+      },
+      "range": "close",
+      "targetArea": { "en": "One summoned creature", "fr": "Une créature invoquée" },
+      "duration": "1 round/level",
+      "savingThrow": "none",
+      "tags": ["spell", "spell_conjuration", "summoning"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "activation": { "actionType": "full_round" },
+      "castEffect": {
+        "type": "summon_entity",
+        "entityType": "summon",
+        "bondingFeatureId": "spell_summon_natures_ally_1",
+        "entityTemplateId": "summon_template_nature_ally_1",
+        "nameKey": "magic.summon.nature_ally",
+        "durationHint": "1 round/level"
+      }
     }
   ]
 }

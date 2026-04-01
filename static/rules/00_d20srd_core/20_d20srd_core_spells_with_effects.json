@@ -1,0 +1,600 @@
+{
+  "_comment": "Spells with castEffect entries — spawn_weapons, summon_entity, animate_undead, create_object. All spells here have a direct cast-time side effect handled by the engine's castSpellEffect() dispatcher.",
+  "supportedLanguages": ["en", "fr"],
+  "entities": [
+
+    {
+      "id": "spell_flame_blade",
+      "category": "magic",
+      "ruleSource": "srd_core",
+      "label": { "en": "Flame Blade", "fr": "Lame de flamme" },
+      "description": {
+        "en": "A 3-foot-long blade of fire springs from your hand. You wield this sword-like beam of fire as if it were a scimitar. Attacks are melee touch attacks and deal 1d8 fire damage +1 point per two caster levels (maximum +10). Against undead, the blade deals maximum damage.",
+        "fr": "Une lame de feu de 90 cm jaillit de votre main. Vous maniez ce faisceau en forme de cimeterre comme si c'était une véritable lame. Les attaques sont des attaques de contact au corps à corps et infligent 1d8 dégâts de feu +1 point pour deux niveaux (max +10). Contre les morts-vivants, inflige les dégâts maximaux."
+      },
+      "magicType": "divine",
+      "school": "evocation",
+      "subSchool": "fire",
+      "descriptors": ["fire"],
+      "resistanceType": "none",
+      "components": ["V", "S", "DF"],
+      "spellLists": { "list_druid": 2 },
+      "range": "0 ft.",
+      "targetArea": { "en": "Sword-like beam", "fr": "Faisceau en forme d'épée" },
+      "duration": "1 min./level (D)",
+      "savingThrow": "none",
+      "tags": ["spell", "spell_evocation", "fire"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "activation": { "actionType": "standard" },
+      "castEffect": {
+        "type": "spawn_weapons",
+        "weaponFeatureId": "item_flame_blade",
+        "count": 1,
+        "durationHint": "1 min./level"
+      }
+    },
+
+    {
+      "id": "spell_produce_flame",
+      "category": "magic",
+      "ruleSource": "srd_core",
+      "label": { "en": "Produce Flame", "fr": "Création de flamme" },
+      "description": {
+        "en": "Flames as hot as a torch spring from your open palm. The flame deals 1d6 fire damage +1 point per caster level (max +5) as a melee touch attack or ranged touch attack (range 120 ft, range increment 25 ft). Throwing the flame puts it out; a new one springs up on your next turn as a free action.",
+        "fr": "Des flammes aussi chaudes qu'une torche jaillissent de votre paume. La flamme inflige 1d6 dégâts de feu +1 point par niveau (max +5) comme attaque de contact au corps à corps ou à distance (portée 36 m, facteur 7,5 m). Lancer la flamme l'éteint ; une nouvelle jaillit à votre prochain tour."
+      },
+      "magicType": "divine",
+      "school": "evocation",
+      "subSchool": "fire",
+      "descriptors": ["fire"],
+      "resistanceType": "spell_resistance",
+      "components": ["V", "S"],
+      "spellLists": { "list_druid": 1, "list_ranger": 1 },
+      "range": "0 ft.",
+      "targetArea": { "en": "Flame in your palm", "fr": "Flamme dans votre paume" },
+      "duration": "1 min./level (D)",
+      "savingThrow": "none",
+      "tags": ["spell", "spell_evocation", "fire"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "activation": { "actionType": "standard" },
+      "castEffect": {
+        "type": "spawn_weapons",
+        "weaponFeatureId": "item_produce_flame",
+        "count": 1,
+        "durationHint": "1 min./level"
+      }
+    },
+
+    {
+      "id": "spell_flame_arrow",
+      "category": "magic",
+      "ruleSource": "srd_core",
+      "label": { "en": "Flame Arrow", "fr": "Flèche de feu" },
+      "description": {
+        "en": "You turn ammunition (arrows or crossbow bolts) into flaming projectiles. Each piece of ammunition deals an extra 1d6 points of fire damage to any target it hits. A flaming arrow or bolt can easily ignite a flammable object or structure, but it won't ignite a creature it misses. 50 arrows per caster level can be affected.",
+        "fr": "Vous transformez des munitions (flèches ou carreaux d'arbalète) en projectiles enflammés. Chaque munition inflige 1d6 dégâts de feu supplémentaires à la cible touchée. Une flèche ou un carreau enflammé peut facilement enflammer un objet combustible."
+      },
+      "magicType": "arcane",
+      "school": "transmutation",
+      "subSchool": "",
+      "descriptors": ["fire"],
+      "resistanceType": "none",
+      "components": ["V", "S", "M"],
+      "spellLists": { "list_sorcerer": 3, "list_wizard": 3 },
+      "range": "close",
+      "targetArea": { "en": "Fifty projectiles, all of which must be together at the time of casting", "fr": "Cinquante projectiles au même endroit lors du lancement" },
+      "duration": "10 min./level",
+      "savingThrow": "will_harmless",
+      "tags": ["spell", "spell_transmutation", "fire"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "activation": { "actionType": "standard" },
+      "castEffect": {
+        "type": "spawn_weapons",
+        "weaponFeatureId": "item_flame_arrow",
+        "count": 50,
+        "durationHint": "10 min./level"
+      }
+    },
+
+    {
+      "id": "spell_fire_seeds",
+      "category": "magic",
+      "ruleSource": "srd_core",
+      "label": { "en": "Fire Seeds", "fr": "Graines de feu" },
+      "description": {
+        "en": "Depending on the version chosen, you can create fire seed grenades (up to 4 acorns each dealing 2d6 fire damage, Reflex DC half) or fire seed landmines (up to 8 holly berries each dealing 1d8+1/level damage in 5-ft radius, Reflex DC half). You can ignite the seeds at will within 40 ft.",
+        "fr": "Selon la version choisie, vous pouvez créer des grenades de graines enflammées (jusqu'à 4 glands infligeant chacun 2d6 dégâts de feu, DD Réflexes ½) ou des mines de graines enflammées (jusqu'à 8 baies de houx infligeant chacune 1d8+1/niveau dans un rayon de 1,5 m)."
+      },
+      "magicType": "divine",
+      "school": "transmutation",
+      "subSchool": "",
+      "descriptors": ["fire"],
+      "resistanceType": "none",
+      "components": ["V", "S", "DF"],
+      "spellLists": { "list_druid": 6 },
+      "range": "touch",
+      "targetArea": { "en": "Up to 4 touched acorns or 8 touched holly berries", "fr": "Jusqu'à 4 glands ou 8 baies de houx au contact" },
+      "duration": "10 min./level or until used",
+      "savingThrow": "reflex_half",
+      "tags": ["spell", "spell_transmutation", "fire"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "activation": { "actionType": "standard" },
+      "castEffect": {
+        "type": "spawn_weapons",
+        "weaponFeatureId": "item_fire_seed_berry",
+        "count": 8,
+        "chargesPerWeapon": 1,
+        "durationHint": "10 min./level"
+      }
+    },
+
+    {
+      "id": "spell_mages_sword",
+      "category": "magic",
+      "ruleSource": "srd_core",
+      "label": { "en": "Mage's Sword", "fr": "Épée du mage" },
+      "description": {
+        "en": "This spell brings into being a shimmering, swordlike plane of force. The sword attacks any single opponent designated by you each round, on your turn. Its attack bonus is your caster level + INT/CHA modifier (like a wizard). It deals 4d6+3 force damage. As a force effect it hits incorporeal creatures.",
+        "fr": "Ce sort crée un plan de force scintillant en forme d'épée. L'épée attaque chaque round l'adversaire désigné par vous, lors de votre tour. Son bonus d'attaque est votre niveau de lanceur + modificateur INT/CHA. Elle inflige 4d6+3 de force. Comme effet de force, touche les créatures intangibles."
+      },
+      "magicType": "arcane",
+      "school": "evocation",
+      "subSchool": "force",
+      "descriptors": ["force"],
+      "resistanceType": "none",
+      "components": ["V", "S", "F"],
+      "spellLists": { "list_sorcerer": 7, "list_wizard": 7 },
+      "range": "close",
+      "targetArea": { "en": "One sword", "fr": "Une épée" },
+      "duration": "1 round/level (D)",
+      "savingThrow": "none",
+      "tags": ["spell", "spell_evocation", "force", "summoning"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "activation": { "actionType": "standard" },
+      "castEffect": {
+        "type": "summon_entity",
+        "entityType": "summon",
+        "bondingFeatureId": "spell_mages_sword",
+        "entityTemplateId": "summon_template_spiritual_weapon",
+        "nameKey": "magic.summon.mages_sword",
+        "durationHint": "1 round/level"
+      }
+    },
+
+    {
+      "id": "spell_mount",
+      "category": "magic",
+      "ruleSource": "srd_core",
+      "label": { "en": "Mount", "fr": "Monture" },
+      "description": {
+        "en": "You summon a light horse or a pony (your choice) to serve you as a mount. The summoned animal has the typical characteristics of its kind, except that it complies with your commands to the best of its ability. The mount is considered an outsider for the duration.",
+        "fr": "Vous invoquez un cheval léger ou un poney (au choix) pour vous servir de monture. L'animal invoqué a les caractéristiques typiques de son espèce, sauf qu'il suit vos ordres du mieux possible. La monture est considérée comme un Extérieur pendant la durée."
+      },
+      "magicType": "arcane",
+      "school": "conjuration",
+      "subSchool": "summoning",
+      "descriptors": [],
+      "resistanceType": "none",
+      "components": ["V", "S", "M"],
+      "spellLists": { "list_paladin": 1, "list_sorcerer": 1, "list_wizard": 1 },
+      "range": "close",
+      "targetArea": { "en": "One mount", "fr": "Une monture" },
+      "duration": "2 hours/level (D)",
+      "savingThrow": "none",
+      "tags": ["spell", "spell_conjuration", "summoning"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "activation": { "actionType": "standard" },
+      "castEffect": {
+        "type": "summon_entity",
+        "entityType": "mount",
+        "bondingFeatureId": "spell_mount",
+        "entityTemplateId": "summon_template_mount",
+        "nameKey": "magic.summon.mount",
+        "durationHint": "2 hours/level"
+      }
+    },
+
+    {
+      "id": "spell_phantom_steed",
+      "category": "magic",
+      "ruleSource": "srd_core",
+      "label": { "en": "Phantom Steed", "fr": "Destrier fantôme" },
+      "description": {
+        "en": "You conjure a Large, quasi-real, horse-like creature to serve as a mount for one willing creature. The steed's speed is 20 feet + 20 feet per 3 caster levels (max 100 ft). At 12th level it can walk on water; at 15th it can fly.",
+        "fr": "Vous convoquez une grande créature quasi-réelle en forme de cheval pour servir de monture. La vitesse du destrier est de 6 m + 6 m par tranche de 3 niveaux (max 30 m). Au niveau 12, il peut marcher sur l'eau ; au niveau 15, il peut voler."
+      },
+      "magicType": "arcane",
+      "school": "conjuration",
+      "subSchool": "creation",
+      "descriptors": [],
+      "resistanceType": "none",
+      "components": ["V", "S"],
+      "spellLists": { "list_sorcerer": 2, "list_wizard": 2 },
+      "range": "0 ft.",
+      "targetArea": { "en": "One quasi-real, horselike creature", "fr": "Une créature quasi-réelle en forme de cheval" },
+      "duration": "1 hour/level (D)",
+      "savingThrow": "none",
+      "tags": ["spell", "spell_conjuration", "summoning", "mount"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "activation": { "actionType": "10_minutes" },
+      "castEffect": {
+        "type": "summon_entity",
+        "entityType": "mount",
+        "bondingFeatureId": "spell_phantom_steed",
+        "entityTemplateId": "summon_template_phantom_steed",
+        "nameKey": "magic.summon.phantom_steed",
+        "durationHint": "1 hour/level"
+      }
+    },
+
+    {
+      "id": "spell_unseen_servant",
+      "category": "magic",
+      "ruleSource": "srd_core",
+      "label": { "en": "Unseen Servant", "fr": "Serviteur invisible" },
+      "description": {
+        "en": "The unseen servant is an invisible mindless shapeless force that performs simple tasks at your command. It can't attack in any way and is immediately destroyed if hit by any form of damage. It can carry only 20 lbs but has enough STR to open doors or windows.",
+        "fr": "Le serviteur invisible est une force invisible, sans intelligence ni forme, qui exécute des tâches simples à votre commandement. Il ne peut pas attaquer et est immédiatement détruit s'il subit des dégâts. Il peut porter jusqu'à 9 kg mais a assez de Force pour ouvrir des portes."
+      },
+      "magicType": "arcane",
+      "school": "conjuration",
+      "subSchool": "creation",
+      "descriptors": ["force"],
+      "resistanceType": "none",
+      "components": ["V", "S", "M"],
+      "spellLists": { "list_bard": 1, "list_sorcerer": 1, "list_wizard": 1 },
+      "range": "close",
+      "targetArea": { "en": "One invisible, mindless, shapeless servant", "fr": "Un serviteur invisible, sans intelligence ni forme" },
+      "duration": "1 hour/level",
+      "savingThrow": "none",
+      "tags": ["spell", "spell_conjuration"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "activation": { "actionType": "standard" },
+      "castEffect": {
+        "type": "create_object",
+        "entityTemplateId": "summon_template_unseen_servant",
+        "nameKey": "magic.summon.unseen_servant",
+        "durationHint": "1 hour/level"
+      }
+    },
+
+    {
+      "id": "spell_tiny_hut",
+      "category": "magic",
+      "ruleSource": "srd_core",
+      "label": { "en": "Tiny Hut", "fr": "Petite cabane" },
+      "description": {
+        "en": "You create an unmoving, opaque sphere of force of any color you desire around yourself. Half the sphere projects above the ground, and the resulting hemispherical enclosure is comfortable and weatherproof. Up to 9 other medium-size or smaller creatures can fit. The hut blocks wind and rain.",
+        "fr": "Vous créez une sphère de force opaque et immobile de la couleur de votre choix. La moitié de la sphère émerge de la surface, créant une enceinte hémisphérique confortable et imperméable. Jusqu'à 9 autres créatures de taille Moyenne ou inférieure peuvent y prendre place."
+      },
+      "magicType": "arcane",
+      "school": "evocation",
+      "subSchool": "force",
+      "descriptors": ["force"],
+      "resistanceType": "none",
+      "components": ["V", "S", "M"],
+      "spellLists": { "list_bard": 3, "list_sorcerer": 3, "list_wizard": 3 },
+      "range": "20 ft.",
+      "targetArea": { "en": "20-ft.-radius sphere centered on your location", "fr": "Sphère de 6 m de rayon centrée sur votre position" },
+      "duration": "2 hours/level (D)",
+      "savingThrow": "none",
+      "tags": ["spell", "spell_evocation", "force"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "activation": { "actionType": "standard" },
+      "castEffect": {
+        "type": "create_object",
+        "entityTemplateId": "summon_template_shelter",
+        "nameKey": "magic.summon.tiny_hut",
+        "durationHint": "2 hours/level"
+      }
+    },
+
+    {
+      "id": "spell_secure_shelter",
+      "category": "magic",
+      "ruleSource": "srd_core",
+      "label": { "en": "Secure Shelter", "fr": "Abri sûr" },
+      "description": {
+        "en": "You conjure a sturdy cottage or lodge of stone and timber. The structure functions as a Tiny Hut but larger and sturdier, with a lockable door and shuttered windows.",
+        "fr": "Vous convoquez une solide maisonnette ou une loge de pierre et de bois. La structure fonctionne comme une Petite cabane mais est plus grande et solide, avec une porte fermant à clé et des volets."
+      },
+      "magicType": "arcane",
+      "school": "conjuration",
+      "subSchool": "creation",
+      "descriptors": ["force"],
+      "resistanceType": "none",
+      "components": ["V", "S", "M", "F"],
+      "spellLists": { "list_bard": 4, "list_sorcerer": 4, "list_wizard": 4 },
+      "range": "close",
+      "targetArea": { "en": "20-ft.-by-20-ft. structure", "fr": "Structure de 6 m × 6 m" },
+      "duration": "2 hours/level (D)",
+      "savingThrow": "none",
+      "tags": ["spell", "spell_conjuration"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "activation": { "actionType": "10_minutes" },
+      "castEffect": {
+        "type": "create_object",
+        "entityTemplateId": "summon_template_shelter",
+        "nameKey": "magic.summon.secure_shelter",
+        "durationHint": "2 hours/level"
+      }
+    },
+
+    {
+      "id": "spell_mages_magnificent_mansion",
+      "category": "magic",
+      "ruleSource": "srd_core",
+      "label": { "en": "Mage's Magnificent Mansion", "fr": "Magnifique manoir du mage" },
+      "description": {
+        "en": "You conjure up an extradimensional dwelling that has amenities as comfortable as those in a fine inn. Creatures within cannot be contacted by magic. Includes illusory servants that can perform tasks.",
+        "fr": "Vous convoquez une demeure extra-dimensionnelle aussi confortable qu'une bonne auberge. Les créatures à l'intérieur ne peuvent pas être contactées par magie. Comprend des servants illusoires capables d'effectuer des tâches."
+      },
+      "magicType": "arcane",
+      "school": "conjuration",
+      "subSchool": "creation",
+      "descriptors": ["force"],
+      "resistanceType": "none",
+      "components": ["V", "S", "F"],
+      "spellLists": { "list_sorcerer": 7, "list_wizard": 7 },
+      "range": "close",
+      "targetArea": { "en": "Extradimensional mansion, up to three 10-ft. cubes/level", "fr": "Manoir extra-dimensionnel, jusqu'à trois cubes de 3 m/niveau" },
+      "duration": "2 hours/level (D)",
+      "savingThrow": "none",
+      "tags": ["spell", "spell_conjuration"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "activation": { "actionType": "10_minutes" },
+      "castEffect": {
+        "type": "create_object",
+        "entityTemplateId": "summon_template_shelter",
+        "nameKey": "magic.summon.magnificent_mansion",
+        "durationHint": "2 hours/level"
+      }
+    },
+
+    {
+      "id": "spell_animate_dead",
+      "category": "magic",
+      "ruleSource": "srd_core",
+      "label": { "en": "Animate Dead", "fr": "Animer les morts" },
+      "description": {
+        "en": "This spell turns the bones or bodies of dead creatures into undead skeletons or zombies that follow your spoken commands. The undead can follow you, or wait in an area and attack any creature entering the area. You can animate a number of HD of undead equal to twice your caster level.",
+        "fr": "Ce sort transforme les os ou corps de créatures mortes en squelettes ou zombies morts-vivants qui suivent vos ordres. Les morts-vivants peuvent vous suivre ou attendre dans une zone et attaquer quiconque y entre. Vous pouvez animer un nombre de DV de morts-vivants égal à deux fois votre niveau."
+      },
+      "magicType": "divine",
+      "school": "necromancy",
+      "subSchool": "",
+      "descriptors": ["evil"],
+      "resistanceType": "none",
+      "components": ["V", "S", "M"],
+      "spellLists": { "list_cleric": 3, "list_sorcerer": 4, "list_wizard": 4 },
+      "range": "touch",
+      "targetArea": { "en": "One or more corpses touched", "fr": "Un ou plusieurs cadavres au contact" },
+      "duration": "Instantaneous",
+      "savingThrow": "none",
+      "tags": ["spell", "spell_necromancy", "evil", "undead"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "activation": { "actionType": "standard" },
+      "castEffect": {
+        "type": "animate_undead",
+        "entityTemplateId": "summon_template_zombie",
+        "nameKey": "magic.summon.zombie",
+        "count": 1,
+        "durationHint": "Permanent (until destroyed)"
+      }
+    },
+
+    {
+      "id": "spell_animate_objects",
+      "category": "magic",
+      "ruleSource": "srd_core",
+      "label": { "en": "Animate Objects", "fr": "Animer les objets" },
+      "description": {
+        "en": "You imbue inanimate objects with mobility and a semblance of life. Each such animated object then immediately attacks whomever or whatever you initially designate as though it were an animated object of the appropriate size. You can animate one Small or smaller object or a corresponding number of larger objects per caster level.",
+        "fr": "Vous insufflez aux objets inanimés la mobilité et une apparence de vie. Chaque objet animé attaque immédiatement la cible désignée. Vous pouvez animer un objet Petit ou plus petit, ou un nombre correspondant d'objets plus grands, par niveau."
+      },
+      "magicType": "divine",
+      "school": "transmutation",
+      "subSchool": "",
+      "descriptors": [],
+      "resistanceType": "none",
+      "components": ["V", "S"],
+      "spellLists": { "list_bard": 6, "list_cleric": 6 },
+      "range": "medium",
+      "targetArea": { "en": "One Small object per caster level; see text", "fr": "Un objet Petit par niveau de lanceur ; voir texte" },
+      "duration": "1 round/level",
+      "savingThrow": "none",
+      "tags": ["spell", "spell_transmutation"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "activation": { "actionType": "standard" },
+      "castEffect": {
+        "type": "animate_objects",
+        "entityTemplateId": "summon_template_animated_object_small",
+        "nameKey": "magic.summon.animated_object",
+        "count": 1,
+        "durationHint": "1 round/level"
+      }
+    },
+
+    {
+      "id": "spell_shambler",
+      "category": "magic",
+      "ruleSource": "srd_core",
+      "label": { "en": "Shambler", "fr": "Tas rampant" },
+      "description": {
+        "en": "The shambler spell creates 1d4+2 shambling mounds with the advanced template. They can be directed as long as you concentrate or for 7 days if you devote it to a guardian role, or 7 months if used as assault troops.",
+        "fr": "Le sort Tas rampant crée 1d4+2 tas rampants améliorés. Ils peuvent être dirigés tant que vous vous concentrez ou pendant 7 jours en mode gardien, ou 7 mois en mode assaut."
+      },
+      "magicType": "divine",
+      "school": "conjuration",
+      "subSchool": "creation",
+      "descriptors": [],
+      "resistanceType": "none",
+      "components": ["V", "S"],
+      "spellLists": { "list_druid": 9 },
+      "range": "medium",
+      "targetArea": { "en": "Three or more shambling mounds, no two of which can be more than 30 ft. apart", "fr": "Trois tas rampants ou plus, ne pouvant être séparés de plus de 9 m" },
+      "duration": "Seven days or seven months (D)",
+      "savingThrow": "none",
+      "tags": ["spell", "spell_conjuration", "plant"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "activation": { "actionType": "standard" },
+      "castEffect": {
+        "type": "summon_entity",
+        "entityType": "summon",
+        "bondingFeatureId": "spell_shambler",
+        "entityTemplateId": "summon_template_shambler",
+        "nameKey": "magic.summon.shambler",
+        "durationHint": "7 days/7 months"
+      }
+    },
+
+    {
+      "id": "spell_summon_monster_1",
+      "category": "magic",
+      "ruleSource": "srd_core",
+      "label": { "en": "Summon Monster I", "fr": "Appel de monstre I" },
+      "description": {
+        "en": "You summon an extraplanar creature (typically an outsider, elemental, or magical beast) from the Summon Monster I list to fight for you. The creature is treated as a Celestial or Fiendish version depending on your alignment. It attacks your enemies to the best of its ability.",
+        "fr": "Vous invoquez une créature extraplanaire (généralement un Extérieur, un élémentaire ou une bête magique) depuis la liste Appel de monstre I pour combattre à vos côtés."
+      },
+      "magicType": "arcane",
+      "school": "conjuration",
+      "subSchool": "summoning",
+      "descriptors": ["see text"],
+      "resistanceType": "none",
+      "components": ["V", "S", "F"],
+      "spellLists": { "list_bard": 1, "list_cleric": 1, "list_sorcerer": 1, "list_wizard": 1 },
+      "range": "close",
+      "targetArea": { "en": "One summoned creature", "fr": "Une créature invoquée" },
+      "duration": "1 round/level (D)",
+      "savingThrow": "none",
+      "tags": ["spell", "spell_conjuration", "summoning"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "activation": { "actionType": "full_round" },
+      "castEffect": {
+        "type": "summon_entity",
+        "entityType": "summon",
+        "bondingFeatureId": "spell_summon_monster_1",
+        "entityTemplateId": "summon_template_monster_cr1",
+        "nameKey": "magic.summon.summon_monster",
+        "durationHint": "1 round/level"
+      }
+    },
+
+    {
+      "id": "spell_summon_monster_2",
+      "category": "magic",
+      "ruleSource": "srd_core",
+      "label": { "en": "Summon Monster II", "fr": "Appel de monstre II" },
+      "description": {
+        "en": "As Summon Monster I except you can summon one creature from the Summon Monster II list, 1d3 creatures from the Summon Monster I list.",
+        "fr": "Comme Appel de monstre I, sauf que vous pouvez invoquer une créature de la liste II ou 1d3 créatures de la liste I."
+      },
+      "magicType": "arcane",
+      "school": "conjuration",
+      "subSchool": "summoning",
+      "descriptors": ["see text"],
+      "resistanceType": "none",
+      "components": ["V", "S", "F"],
+      "spellLists": { "list_bard": 2, "list_cleric": 2, "list_sorcerer": 2, "list_wizard": 2 },
+      "range": "close",
+      "targetArea": { "en": "One or more summoned creatures, no two of which can be more than 30 ft. apart", "fr": "Une ou plusieurs créatures invoquées, séparées d'au plus 9 m" },
+      "duration": "1 round/level (D)",
+      "savingThrow": "none",
+      "tags": ["spell", "spell_conjuration", "summoning"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "activation": { "actionType": "full_round" },
+      "castEffect": {
+        "type": "summon_entity",
+        "entityType": "summon",
+        "bondingFeatureId": "spell_summon_monster_2",
+        "entityTemplateId": "summon_template_monster_cr1",
+        "nameKey": "magic.summon.summon_monster",
+        "durationHint": "1 round/level"
+      }
+    },
+
+    {
+      "id": "spell_summon_swarm",
+      "category": "magic",
+      "ruleSource": "srd_core",
+      "label": { "en": "Summon Swarm", "fr": "Appel de nuée" },
+      "description": {
+        "en": "You summon a swarm of bats, rats, or spiders (your choice), which immediately attacks all creatures in its area. You have no control over its target but may flee from the swarm if you are damaged by it. A swarm is immune to weapon damage.",
+        "fr": "Vous invoquez une nuée de chauves-souris, rats ou araignées (au choix), qui attaque immédiatement toutes les créatures dans sa zone. Vous ne contrôlez pas sa cible mais pouvez fuir si vous êtes blessé. Une nuée est immunisée contre les dégâts d'armes."
+      },
+      "magicType": "arcane",
+      "school": "conjuration",
+      "subSchool": "summoning",
+      "descriptors": [],
+      "resistanceType": "none",
+      "components": ["V", "S", "M"],
+      "spellLists": { "list_bard": 2, "list_druid": 2, "list_sorcerer": 2, "list_wizard": 2 },
+      "range": "close",
+      "targetArea": { "en": "One swarm of bats, rats, or spiders", "fr": "Une nuée de chauves-souris, rats ou araignées" },
+      "duration": "Concentration + 2 rounds",
+      "savingThrow": "none",
+      "tags": ["spell", "spell_conjuration", "summoning"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "activation": { "actionType": "full_round" },
+      "castEffect": {
+        "type": "summon_entity",
+        "entityType": "summon",
+        "bondingFeatureId": "spell_summon_swarm",
+        "entityTemplateId": "summon_template_swarm",
+        "nameKey": "magic.summon.swarm",
+        "durationHint": "Concentration + 2 rounds"
+      }
+    },
+
+    {
+      "id": "spell_summon_instrument",
+      "category": "magic",
+      "ruleSource": "srd_core",
+      "label": { "en": "Summon Instrument", "fr": "Appel d'instrument" },
+      "description": {
+        "en": "You summon one handheld musical instrument of your choice. It is a simple instrument, appropriate for a bard. When the spell ends, the instrument disappears.",
+        "fr": "Vous invoquez un instrument de musique portatif de votre choix. C'est un instrument simple, approprié pour un barde. À la fin du sort, l'instrument disparaît."
+      },
+      "magicType": "arcane",
+      "school": "conjuration",
+      "subSchool": "summoning",
+      "descriptors": [],
+      "resistanceType": "none",
+      "components": ["V", "S"],
+      "spellLists": { "list_bard": 0 },
+      "range": "0 ft.",
+      "targetArea": { "en": "One summoned handheld musical instrument", "fr": "Un instrument de musique portatif invoqué" },
+      "duration": "1 min./level (D)",
+      "savingThrow": "none",
+      "tags": ["spell", "spell_conjuration", "summoning"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "activation": { "actionType": "standard" },
+      "castEffect": {
+        "type": "create_object",
+        "entityTemplateId": "summon_template_unseen_servant",
+        "nameKey": "magic.summon.instrument",
+        "durationHint": "1 min./level"
+      }
+    }
+
+  ]
+}

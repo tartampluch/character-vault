@@ -5,7 +5,7 @@
 ![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?logo=php&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-3-003B57?logo=sqlite&logoColor=white)
 ![PHPUnit](https://img.shields.io/badge/PHPUnit-210_tests%2C_714_assertions-6E9F18?logo=php&logoColor=white)
-![Vitest](https://img.shields.io/badge/Vitest-2209_tests-6E9F18?logo=vitest&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-2340_tests-6E9F18?logo=vitest&logoColor=white)
 ![i18n](https://img.shields.io/badge/i18n-Language--agnostic-0EA5E9?logo=googletranslate&logoColor=white)
 ![Gemini Pro](https://img.shields.io/badge/Gemini-Pro-4285F4?logo=googlegemini&logoColor=white)
 ![Claude Sonnet](https://img.shields.io/badge/Claude-Sonnet-D97757?logo=anthropic&logoColor=white)
@@ -204,6 +204,7 @@ The VS Code tasks **Test: Coverage report** (default test task, `⌘⇧B`) and *
 | File | What it covers |
 |------|----------------|
 | [`characterBuildScenario.test.ts`](src/tests/characterBuildScenario.test.ts) | Full Fighter 3/Monk 3/Psion 1/Wizard 1 build — BAB, saves, HP, SP budget, feats, AC, XP penalty |
+| [`seedCharacters.test.ts`](src/tests/seedCharacters.test.ts) | Seed character builds — Kael Shadowstep (Human Soulknife 7) and Sylara Moonwhisper (Elf Druid 7): BAB, saves, HP, AC, initiative, skill points, feat slots, spell slots, class features, proficiencies, racial traits |
 | [`multiclass.test.ts`](src/tests/multiclass.test.ts) | Multiclass BAB/saves progression, level-gated features, skill rank locking |
 | [`dagResolution.test.ts`](src/tests/dagResolution.test.ts) | DAG cascade, forbidden tags, formula-as-value, conditionNode, synergy auto-generation, circular dep guard |
 | [`stackingRules.test.ts`](src/tests/stackingRules.test.ts) | D&D 3.5 stacking rules, DR best-wins grouping, multiplier, setAbsolute |
@@ -262,7 +263,7 @@ The VS Code tasks **Test: Coverage report** (default test task, `⌘⇧B`) and *
 
 Coverage is measured with `npm run test:coverage` (V8 provider). Scope: `src/lib/engine/**`, `src/lib/i18n/**`, `src/lib/utils/**`, `src/lib/api/**`. Excluded: Svelte components, static JSON data files, `.svelte-kit/` artefacts, and pure type declarations.
 
-**Overall (54 test files, 2209 tests): 89.54% statements · 83.5% branches · 88.63% functions · 91.4% lines**
+**Overall (55 test files, 2340 tests): 89.71% statements · 83.62% branches · 88.99% functions · 91.49% lines**
 
 > The aggregate includes barrel files and two untested API modules (`serverSettingsApi.ts`, `templatesApi.ts`) which lower the total. Per-module coverage for tested code is much higher.
 

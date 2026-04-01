@@ -739,7 +739,7 @@ $now = time();
 //   BAB: +5 (¾ progression, Soulknife 7)
 //   AC: 10 + 4(mithral_shirt) + 3(DEX w/gloves) + 1(amulet_natural) + 1(ring_prot) = 19
 //   Saves:
-//     Fort  +4(base) + 2(CON) + 1(cloak) = +7
+//     Fort  +2(base) + 2(CON) + 1(cloak) = +5  ← Soulknife Fort is Poor save; base +2 at level 7
 //     Ref   +5(base) + 3(DEX) + 1(cloak) = +9
 //     Will  +5(base) + 1(WIS) + 1(cloak) = +7
 //   Initiative: +3(DEX) + 4(Improved Initiative) = +7
@@ -757,10 +757,10 @@ $now = time();
 //     Lv1: Mind Blade, Weapon Focus (Mind Blade), Wild Talent
 //     Lv2: Throw Mind Blade
 //     Lv3: Psychic Strike +1d8
-//     Lv4: +1 Mind Blade, Shape Mind Blade
-//     Lv5: Free Draw, Speed of Thought (bonus psionic feat)
-//     Lv6: Psychic Strike +2d8
-//     Lv7: +2 Mind Blade, Knife to the Soul
+//     Lv4: +1 Mind Blade
+//     Lv5: Free Draw, Shape Mind Blade
+//     Lv6: Mind Blade Enhancement +1, Speed of Thought (bonus psionic feat)
+//     Lv7: Psychic Strike +2d8
 //
 //   MANUALLY CHOSEN FEATS (stored in activeFeatures):
 //     Lv1         : Two-Weapon Fighting (DEX 15 req ✓ — DEX 14 base + Gloves +2 = 16)
@@ -968,21 +968,21 @@ $kaelData = [
 //
 //   HP: 7d8 = 8+6+7+5+8+6+7 = 47 dice + CON_mod(+1) × 7 = 47 + 7 = 54 total
 //   BAB: +5 (¾ progression, Druid 7)
-//   AC: 10 + 5(rhino_hide) + 2(darkwood_shield) + 2(DEX — capped by rhino +2 max_dex)
-//       + 1(amulet_natural) + 1(ring_prot) = 21
+//   AC: 10 + 5(rhino_hide) + 2(darkwood_shield) + 3(DEX — Rhino Hide maxDex +4, no cap)
+//       + 1(amulet_natural) + 1(ring_prot) = 22
 //   Saves (with Cloak of Resistance +2):
 //     Fort  +5(base) + 1(CON) + 2(cloak) = +8
 //     Ref   +2(base) + 3(DEX) + 2(cloak) = +7
 //     Will  +5(base) + 4(WIS) + 2(cloak) = +11
 //
 //   CLASS FEATURES (auto-granted by engine from class_druid levelProgression):
-//     Lv1: Animal Companion, Nature Sense, Wild Empathy, Druid Bonus Languages
+//     Lv1: Animal Companion, Nature Sense, Wild Empathy, Druid Spellcasting
 //     Lv2: Woodland Stride
 //     Lv3: Trackless Step
-//     Lv4: Resist Nature's Lure, Wild Shape (Small/Medium, 1/day)
-//     Lv5: Wild Shape (Large, 2/day)
-//     Lv6: Wild Shape (3/day)
-//     Lv7: Wild Shape (4/day)
+//     Lv4: Resist Nature's Lure
+//     Lv5: Wild Shape (Small/Medium, 1/day)
+//     Lv6: Wild Shape (2/day)
+//     Lv7: Wild Shape (3/day)
 //
 //   MANUALLY CHOSEN FEATS (stored in activeFeatures):
 //     Lv1: Natural Spell  (cast spells in Wild Shape — essential for a druid)
@@ -990,12 +990,11 @@ $kaelData = [
 //     Lv6: Augment Summoning  (+4 STR/CON to summoned creatures)
 //
 //   SPELL SLOTS (Druid 7, WIS 18 = mod +4 → +1 bonus spell per level 1-4):
-//     0th: 6/day (cantrips, no bonus for 0-level)
-//     1st: 5 + 1(WIS bonus) = 6/day
-//     2nd: 4 + 1(WIS bonus) = 5/day
-//     3rd: 3 + 1(WIS bonus) = 4/day
+//     0th: 6/day (cantrips; no WIS bonus on 0-level slots)
+//     1st: 4 + 1(WIS bonus) = 5/day
+//     2nd: 3 + 1(WIS bonus) = 4/day
+//     3rd: 2 + 1(WIS bonus) = 3/day
 //     4th: 1 + 1(WIS bonus) = 2/day
-//     (Domain spells add 1 per level from chosen domain)
 //
 //   LANGUAGES:
 //     Elven racial automatic: Common, Elvish, Sylvan, Druidic (class)
@@ -1149,8 +1148,8 @@ $sylaraData = [
 
         // ── Equipped Magic Items ───────────────────────────────────────────
         // Rhino Hide: unique named non-metal medium armor (druid-legal, no arcane failure).
-        //   AC +5, max DEX +2 (caps DEX bonus at +2), ACP -2. Price: 5,165 gp.
-        //   Grants the wearer a powerful charge attack 1/day (bonus vs. objects/structures).
+        //   AC +5 (armor type; base hide +3 + enhancement +2), max DEX +4, ACP -1. Price: 5,165 gp.
+        //   Deals +2d6 on any successful charge attack made by the wearer (SRD).
         ['instanceId' => 'afi_armor_sylara',   'featureId' => 'item_armor_specific_rhino_hide',       'isActive' => true],
         // Darkwood Shield: wooden heavy shield (druid-legal, no metal).
         //   AC +2 shield bonus. Darkwood is masterwork; ACP reduced to 0.

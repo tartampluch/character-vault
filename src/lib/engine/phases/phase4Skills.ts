@@ -77,7 +77,14 @@ export function buildSkillPointsBudget(
 
   for (const entry of flatModifiers) {
     const mod = entry.modifier;
-    if (mod.targetId !== 'attributes.skill_points_per_level') continue;
+    // Accept both the normalised form ("skill_points_per_level") and the namespaced form
+    // ("attributes.skill_points_per_level").  phase0Modifiers.processModifierList() runs
+    // every modifier targetId through normaliseModifierTargetId() which strips the
+    // "attributes." namespace prefix, so flat modifiers always carry the bare key.
+    // The namespaced form is kept here as a fallback in case unprocessed modifiers are
+    // ever passed directly (e.g., in tests).
+    if (mod.targetId !== 'skill_points_per_level' &&
+        mod.targetId !== 'attributes.skill_points_per_level') continue;
     if (mod.situationalContext) continue;
 
     const sourceId = mod.sourceId;
@@ -113,14 +120,16 @@ export function buildSkillPointsBudget(
   let bonusSpPerLevel = 0;
   for (const entry of flatModifiers) {
     const mod = entry.modifier;
-    if (mod.targetId !== 'attributes.bonus_skill_points_per_level') continue;
+    if (mod.targetId !== 'bonus_skill_points_per_level' &&
+        mod.targetId !== 'attributes.bonus_skill_points_per_level') continue;
     if (mod.situationalContext) continue;
     bonusSpPerLevel += typeof mod.value === 'number' ? mod.value : 0;
   }
 
   for (const entry of flatModifiers) {
     const mod = entry.modifier;
-    if (mod.targetId !== 'attributes.skill_points_per_level') continue;
+    if (mod.targetId !== 'skill_points_per_level' &&
+        mod.targetId !== 'attributes.skill_points_per_level') continue;
     if (mod.situationalContext) continue;
     const sourceId = mod.sourceId;
     if (processedClassSPSources.has(sourceId)) continue;
@@ -128,7 +137,16 @@ export function buildSkillPointsBudget(
   }
 
   const totalClassPoints = classEntries.reduce((sum, e) => sum + e.totalPoints, 0);
-  const totalBonusPoints = bonusSpPerLevel * characterLevel;
+
+  // D&D 3.5 SRD RULE: At 1st level, a character gains 4× their normal skill points.
+  // The "4× first-level bonus" applies to ALL skill point sources including racial/feat
+  // bonus SP (e.g., Human's extra +1/level also gets the ×4 multiplier at level 1).
+  //
+  // Implementation: the bonus SP are granted for `characterLevel` levels. If there is at
+  // least one class level (characterLevel ≥ 1), the first-level gets 4× (i.e., an extra
+  // 3 bonus points on TOP of the per-level amount). This mirrors how class SP are handled.
+  const bonusFirstLevelExtra = (characterLevel >= 1 && classEntries.length > 0) ? 3 * bonusSpPerLevel : 0;
+  const totalBonusPoints = bonusSpPerLevel * characterLevel + bonusFirstLevelExtra;
 
   return {
     perClassBreakdown: classEntries,

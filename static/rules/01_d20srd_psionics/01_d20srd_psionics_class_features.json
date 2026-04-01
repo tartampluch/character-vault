@@ -577,10 +577,18 @@
         "soulknife",
         "supernatural",
         "psionic",
-        "mind_blade"
+        "mind_blade",
+        "weapon"
       ],
       "activation": {
         "actionType": "move"
+      },
+      "weaponData": {
+        "damageDice": "1d6",
+        "damageType": "slashing",
+        "critRange": "19-20",
+        "critMultiplier": 2,
+        "wieldCategory": "light"
       },
       "grantedModifiers": [
         {

@@ -106,6 +106,7 @@
   import CastingPanel          from '$lib/components/magic/CastingPanel.svelte';
   import Grimoire              from '$lib/components/magic/Grimoire.svelte';
   import SpecialAbilities      from '$lib/components/magic/SpecialAbilities.svelte';
+  import SummonedEntitiesPanel from '$lib/components/magic/SummonedEntitiesPanel.svelte';
 
   // ── Inventory tab components (Phase 13) ───────────────────────────────────
   import InventoryTab          from '$lib/components/inventory/InventoryTab.svelte';
@@ -245,8 +246,13 @@
           .catch(err => {
             console.warn('[CharacterSheet] Failed to load rule sources:', err);
             // Graceful degradation: show the sheet even if rules failed to load.
-            // The user will see base stats without rule-derived bonuses.
-            if (!aborted) loadState = 'ready';
+            // Still bump the version so $derived blocks (savingThrowConfig, skills, etc.)
+            // re-evaluate and show whatever data IS available, rather than stale defaults.
+            // Also re-caches synthetic alignment features so the alignment dropdown works.
+            if (!aborted) {
+              engine.bumpDataLoaderVersion();
+              loadState = 'ready';
+            }
           });
       })
       .catch(err => {
@@ -609,6 +615,11 @@
             Placed above HealthAndXP because active buffs are combat-critical info.
           -->
           <EphemeralEffectsPanel />
+          <!--
+            Summoned entities are also shown in the combat tab for quick
+            dismiss access during a fight. Renders nothing when no summons exist.
+          -->
+          <SummonedEntitiesPanel />
           <HealthAndXP />
           <ArmorClass />
           <CoreCombat />
@@ -643,6 +654,13 @@
           <Grimoire />
           <CastingPanel />
         </div>
+
+        <!--
+          Summoned Entities panel — only renders when there are active summons.
+          Positioned prominently so the player can see and dismiss summons quickly.
+          Examples: Spiritual Weapon, nature allies, other conjured entities.
+        -->
+        <SummonedEntitiesPanel />
 
         <SpecialAbilities />
 

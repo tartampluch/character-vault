@@ -109,7 +109,7 @@ export function buildCombatStatPipelines(
 
   // Process each saving throw pipeline
   for (const [pipelineId, basePipeline] of Object.entries(characterSaves)) {
-    const activeMods = flatMods
+    const allActiveMods = flatMods
       .filter(e => e.modifier.targetId === pipelineId && !e.modifier.situationalContext)
       .map(e => e.modifier);
 
@@ -117,25 +117,49 @@ export function buildCombatStatPipelines(
       .filter(e => e.modifier.targetId === pipelineId && e.modifier.situationalContext)
       .map(e => e.modifier);
 
-    let gestaltSaveAdjustment = 0;
-    let nonBaseSaveMods = activeMods;
+    // Separate base-type modifiers (class progression increments) from misc modifiers.
+    // They are handled differently for display vs. for magnitude:
+    //
+    //   DISPLAY (breakdown modal):
+    //     - `baseValue`        = sum of all base-type class progression increments.
+    //       This shows as a single "Class base: +N" line in the breakdown header instead
+    //       of one entry per level-up increment (noisy and misleading in the UI).
+    //     - `activeModifiers`  = only the non-base misc mods (items, feats, etc.).
+    //
+    //   MAGNITUDE (dice rolls, totalBonus for diceEngine.parseAndRoll):
+    //     - `totalBonus`       = full sum of ALL active mods including class progression.
+    //       The diceEngine reads `pipeline.totalBonus` as the static bonus for 1d20 rolls,
+    //       so it must include class progression, not just misc mods.
+    //     - `totalValue`       = totalBonus (since basePipeline.baseValue is always 0 for saves).
+    const baseSaveMods = allActiveMods.filter(m => m.type === 'base');
+    const miscSaveMods = allActiveMods.filter(m => m.type !== 'base');
+
+    let classBaseSaveSum: number;
+    let miscOnlyMods = miscSaveMods;
+
     if (isGestalt && isGestaltAffectedPipeline(pipelineId)) {
-      const baseSaveMods = activeMods.filter(m => m.type === 'base');
-      nonBaseSaveMods = activeMods.filter(m => m.type !== 'base');
-      gestaltSaveAdjustment = computeGestaltBase(baseSaveMods, { ...classLevels }, characterLevel);
+      classBaseSaveSum = computeGestaltBase(baseSaveMods, { ...classLevels }, characterLevel);
+    } else {
+      // Standard (non-gestalt): sum all base-type modifiers.
+      classBaseSaveSum = baseSaveMods.reduce(
+        (sum, m) => sum + (typeof m.value === 'number' ? m.value : 0),
+        basePipeline.baseValue
+      );
     }
 
-    const stacking = applyStackingRules(
-      nonBaseSaveMods,
-      isGestalt && isGestaltAffectedPipeline(pipelineId)
-        ? basePipeline.baseValue + gestaltSaveAdjustment
-        : basePipeline.baseValue
-    );
+    // Run stacking rules over ALL active mods (base + misc) with the original baseValue (0).
+    // This preserves the original totalBonus and totalValue magnitudes — only the display
+    // representation changes (baseValue chips vs. listed modifiers in the breakdown).
+    const stacking = applyStackingRules(allActiveMods, basePipeline.baseValue);
 
     result[pipelineId] = {
       ...basePipeline,
-      activeModifiers: stacking.appliedModifiers,
+      // baseValue = class progression sum — used by ModifierBreakdownModal + getBaseSaveBonus
+      baseValue: classBaseSaveSum,
+      // activeModifiers = only non-class misc mods — what the breakdown modal lists
+      activeModifiers: applyStackingRules(miscOnlyMods, 0).appliedModifiers,
       situationalModifiers: situationalMods,
+      // totalBonus / totalValue keep original magnitudes for diceEngine compatibility
       totalBonus: stacking.totalBonus,
       totalValue: stacking.totalValue,
       derivedModifier: 0,

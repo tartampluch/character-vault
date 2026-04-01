@@ -196,6 +196,18 @@ export class GameEngine {
   /** Called by the vault page after loadRuleSources() resolves. */
   bumpDataLoaderVersion(): void {
     this.dataLoaderVersion = dataLoader.loadVersion;
+    // Re-cache synthetic alignment features that may have been wiped by
+    // loadRuleSources() → clearCache(). Alignment features are not shipped in
+    // any rule JSON file — they are synthesised on demand and survive only as
+    // long as the DataLoader cache is intact. After every loadRuleSources() call
+    // (which clears the cache before repopulating it), we must re-register them
+    // so that computeActiveTags() can emit the alignment tag and BasicInfo.svelte
+    // can correctly reflect the stored value in its <select>.
+    for (const afi of this.character.activeFeatures) {
+      if (afi.isActive && afi.featureId.startsWith('alignment_')) {
+        this.#ensureAlignmentFeatureCached(afi.featureId);
+      }
+    }
   }
 
   /**
@@ -1683,7 +1695,83 @@ export class GameEngine {
    */
   isItemWeapon(feature: ItemFeature): boolean {
     if (!feature.weaponData) return false;
+    // Standard items carry the 'weapon' or 'ranged' category tag.
+    // Class features that manifest as weapons (e.g., Soulknife Mind Blade) also carry
+    // the 'weapon' tag and have weaponData, so they appear in the attacks panel.
     return feature.tags.some(t => t === WEAPON_CATEGORY_TAG || t === RANGED_CATEGORY_TAG);
+  }
+
+  /**
+   * Returns all features that should appear as selectable weapons in the attacks panel.
+   *
+   * This extends the standard item-only approach to also include class features that
+   * manifest as weapons — specifically "virtual weapons" like the Soulknife Mind Blade
+   * which are class_feature entities (not 'item' category) but carry weaponData and the
+   * 'weapon' tag.
+   *
+   * HOW VIRTUAL WEAPONS ARE DISCOVERED:
+   *   1. Direct activeFeatures: standard item weapons the player has equipped.
+   *   2. Granted features via class levelProgression: class features with weaponData that
+   *      were unlocked at or below the character's class level. These are NOT stored as
+   *      separate ActiveFeatureInstance entries — they are implied by the class instance.
+   *      The engine resolves them here by scanning the active class feature's levelProgression.
+   *
+   * ZERO-HARDCODING COMPLIANCE:
+   *   The weapon tag ('weapon') and weaponData presence are the sole detection criteria.
+   *   No class names, feature IDs, or D&D-specific identifiers appear in this method.
+   *   Any class feature with weaponData + 'weapon' or 'ranged' tag will appear.
+   *
+   * @returns Array of [feature, isActive] pairs ready for toWeaponOption() in Attacks.svelte.
+   */
+  getUsableWeaponFeatures(): Array<{ feature: ItemFeature; isActive: boolean }> {
+    const result: Array<{ feature: ItemFeature; isActive: boolean }> = [];
+    const seenIds = new Set<string>();
+
+    // Pass 1: Direct activeFeature instances (standard carried items)
+    for (const afi of this.character.activeFeatures) {
+      const feat = dataLoader.getFeature(afi.featureId);
+      if (!feat || feat.category !== 'item') continue;
+      if (seenIds.has(feat.id)) continue;
+      seenIds.add(feat.id);
+      result.push({ feature: feat as ItemFeature, isActive: afi.isActive });
+    }
+
+    // Pass 2: Class features granted through levelProgression that have weaponData.
+    // These are "virtual weapons" — they are active whenever their class is active
+    // at the level that grants them, but they don't appear as explicit AFIs.
+    for (const afi of this.character.activeFeatures) {
+      if (!afi.isActive) continue;
+      const classFeat = dataLoader.getFeature(afi.featureId);
+      if (!classFeat || classFeat.category !== 'class') continue;
+
+      const classLevel = this.character.classLevels[afi.featureId] ?? 0;
+      if (classLevel < 1) continue;
+
+      // Collect all granted feature IDs up to this class level
+      const grantedIds = new Set<string>();
+      for (const gf of classFeat.grantedFeatures ?? []) {
+        if (gf && !gf.startsWith('-')) grantedIds.add(gf);
+      }
+      for (const entry of classFeat.levelProgression ?? []) {
+        if (entry.level <= classLevel) {
+          for (const gf of entry.grantedFeatures ?? []) {
+            if (gf && !gf.startsWith('-')) grantedIds.add(gf);
+          }
+        }
+      }
+
+      // Check each granted feature for weaponData + weapon tag
+      for (const grantedFeatureId of grantedIds) {
+        if (seenIds.has(grantedFeatureId)) continue;
+        const grantedFeat = dataLoader.getFeature(grantedFeatureId) as ItemFeature | undefined;
+        if (!grantedFeat?.weaponData) continue;
+        if (!this.isItemWeapon(grantedFeat)) continue;
+        seenIds.add(grantedFeatureId);
+        result.push({ feature: grantedFeat, isActive: true });
+      }
+    }
+
+    return result;
   }
 
   /**
@@ -2331,6 +2419,24 @@ export class GameEngine {
   phase_maxCrossClassSkillRanks: number = $derived(
     Math.floor((this.phase0_characterLevel + 3) / 2)
   );
+
+  /**
+   * Whether the character is currently in the "creation" phase — i.e. no level-up
+   * has been committed yet (no `minimumSkillRanks` floor entries).
+   *
+   * Used by AbilityScores.svelte to gate the "Point Buy" and "Roll Stats" wizards:
+   * those tools are only relevant during the initial build, not when editing an
+   * already-played character whose stats have been fixed by play history.
+   *
+   * "Character creation" ends the moment the player calls `lockAllSkillRanks()`
+   * (after their first level-up session). Any `minimumSkillRanks` entry > 0
+   * signals that at least one level has been committed.
+   */
+  phase_isCharacterCreation: boolean = $derived.by(() => {
+    const mins = this.character.minimumSkillRanks;
+    if (!mins) return true;
+    return !Object.values(mins).some(v => v > 0);
+  });
 
   // ---------------------------------------------------------------------------
   // HP STATUS — Character vitality state (ARCHITECTURE.md Phase 10.1)
@@ -3472,10 +3578,18 @@ export class GameEngine {
    * @param keyAbilityId - e.g. "stat_constitution"
    * @returns Base save bonus, or 0 when pipelines are not yet resolved.
    */
-  getBaseSaveBonus(pipelineId: string, keyAbilityId: string): number {
-    const pipeline   = this.phase3_combatStats[pipelineId];
-    const abilityMod = this.phase2_attributes[keyAbilityId]?.derivedModifier ?? 0;
-    return (pipeline?.totalBonus ?? 0) - abilityMod;
+  getBaseSaveBonus(pipelineId: string, _keyAbilityId: string): number {
+    // After the phase3 save-pipeline refactor, base-type class progression modifiers
+    // are summed into `pipeline.baseValue` (not scattered through `activeModifiers`).
+    // `baseValue` therefore IS the class-progression base save bonus, which is what
+    // the SavingThrows.svelte "Base" chip is supposed to display.
+    //
+    // The previous implementation (totalBonus - abilityMod) only worked when
+    // baseValue was 0 and all modifiers (including per-level class increments) were
+    // in totalBonus. Now that class increments are absorbed into baseValue, returning
+    // baseValue directly is correct.
+    const pipeline = this.phase3_combatStats[pipelineId];
+    return pipeline?.baseValue ?? 0;
   }
 
   /**
@@ -5070,6 +5184,284 @@ export class GameEngine {
         const bRound = b.ephemeral?.appliedAtRound ?? 0;
         return bRound - aRound;
       });
+  }
+
+  // ---------------------------------------------------------------------------
+  // SPELL CAST EFFECTS — Weapon spawning & entity summoning
+  // ---------------------------------------------------------------------------
+  //
+  // These methods handle the side-effects of casting spells that create
+  // temporary objects in the world:
+  //
+  //   castSpellEffect(spell) — dispatches to the correct handler based on
+  //                            spell.castEffect.type:
+  //     'spawn_weapons'  → castSpellSpawnWeapons()
+  //     'summon_entity'  → castSpellSummonEntity()
+  //
+  //   dismissLinkedEntity()   — removes a summoned entity by instanceId.
+  //
+  // ARCHITECTURE NOTE:
+  //   All game logic (count, charges, entity template lookup) lives here,
+  //   never in Svelte components (zero-game-logic-in-Svelte, ARCHITECTURE.md §3).
+  //   Spell data (weaponFeatureId, entityTemplateId, etc.) is declared in
+  //   the spell's JSON castEffect block — no D&D names are hardcoded in TypeScript.
+
+  /**
+   * Dispatches a spell's `castEffect` to the appropriate handler.
+   * Called by CastingPanel.svelte immediately after a successful slot deduction.
+   *
+   * RETURN VALUE:
+   *   `true`  — the cast effect was handled.
+   *   `false` — the spell has no castEffect, or the effect type is unknown.
+   *
+   * @param spell      - The MagicFeature being cast.
+   * @param spellLevel - Effective spell level (for duration / slot source tracking).
+   * @param currentRound   - The current combat round (0 = out of combat).
+   */
+  castSpellEffect(
+    spell: import('../types/feature').MagicFeature,
+    spellLevel: number,
+    currentRound = 0
+  ): boolean {
+    const ce = spell.castEffect;
+    if (!ce) return false;
+
+    if (ce.type === 'spawn_weapons') {
+      this.#castSpellSpawnWeapons(spell, ce, currentRound);
+      return true;
+    }
+    if (ce.type === 'summon_entity') {
+      this.#castSpellSummonEntity(spell, ce, currentRound);
+      return true;
+    }
+    if (ce.type === 'animate_objects') {
+      // Animated objects are treated the same as summons but with type 'summon'
+      // (they appear in the same SummonedEntitiesPanel, just with a different nameKey).
+      this.#castSpellSummonEntity(
+        spell,
+        {
+          type: 'summon_entity',
+          entityType: 'summon',
+          bondingFeatureId: spell.id,
+          entityTemplateId: ce.entityTemplateId,
+          nameKey: ce.nameKey,
+          durationHint: ce.durationHint,
+        },
+        currentRound,
+        ce.count ?? 1
+      );
+      return true;
+    }
+    if (ce.type === 'animate_undead') {
+      this.#castSpellSummonEntity(
+        spell,
+        {
+          type: 'summon_entity',
+          entityType: 'undead',
+          bondingFeatureId: spell.id,
+          entityTemplateId: ce.entityTemplateId,
+          nameKey: ce.nameKey,
+          durationHint: ce.durationHint,
+        },
+        currentRound,
+        ce.count ?? 1
+      );
+      return true;
+    }
+    if (ce.type === 'create_object') {
+      this.#castSpellSummonEntity(
+        spell,
+        {
+          type: 'summon_entity',
+          entityType: 'object',
+          bondingFeatureId: spell.id,
+          entityTemplateId: ce.entityTemplateId,
+          nameKey: ce.nameKey,
+          durationHint: ce.durationHint,
+        },
+        currentRound,
+        1
+      );
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Spawns one or more ephemeral weapon instances when a spell is cast.
+   *
+   * D&D 3.5 EXAMPLE — Magic Stone (cleric/druid level 1, transmutation):
+   *   Casting transmutes up to 3 pebbles into +1 ranged weapons that deal 1d6+1
+   *   (2d6+2 vs undead). Each pebble is a separate weapon instance with 1 charge.
+   *   When all 3 are thrown (or after 30 minutes), the effect expires.
+   *
+   * IMPLEMENTATION:
+   *   For each stone (1..count), an ephemeral `ActiveFeatureInstance` is created
+   *   that points to `castEffect.weaponFeatureId`. The instance has `isActive: true`
+   *   so it shows up in the attacks dropdown via `getUsableWeaponFeatures()`.
+   *   If `chargesPerWeapon > 0`, the instance gets an `itemResourcePools.charges` entry.
+   *   The `ephemeral` metadata lets EphemeralEffectsPanel show it with an "Expire" button.
+   *
+   * @param spell - The MagicFeature being cast.
+   * @param ce    - The spawn_weapons castEffect block.
+   * @param currentRound - Combat round when cast (0 = out of combat).
+   */
+  #castSpellSpawnWeapons(
+    spell: import('../types/feature').MagicFeature,
+    ce: Extract<import('../types/feature-magic').SpellCastEffect, { type: 'spawn_weapons' }>,
+    currentRound: number
+  ): void {
+    const weaponFeature = dataLoader.getFeature(ce.weaponFeatureId);
+    if (!weaponFeature) {
+      console.warn(`[GameEngine] castSpellSpawnWeapons: weapon feature "${ce.weaponFeatureId}" not found.`);
+      return;
+    }
+
+    for (let i = 0; i < (ce.count ?? 1); i++) {
+      const instanceId = `afi_spell_weapon_${spell.id}_${Date.now()}_${i}`;
+      const afi: ActiveFeatureInstance = {
+        instanceId,
+        featureId: ce.weaponFeatureId,
+        isActive: true,
+        ephemeral: {
+          isEphemeral: true,
+          appliedAtRound: currentRound,
+          sourceItemInstanceId: spell.id as ID,
+          durationHint: ce.durationHint,
+        },
+      };
+
+      // Initialise charge tracking so the player can track how many are left.
+      if (ce.chargesPerWeapon !== undefined && ce.chargesPerWeapon > 0) {
+        afi.itemResourcePools = { charges: ce.chargesPerWeapon };
+      }
+
+      this.character.activeFeatures.push(afi);
+    }
+  }
+
+  /**
+   * Spawns an ephemeral linked entity when a summoning spell is cast.
+   *
+   * D&D 3.5 EXAMPLES:
+   *   Spiritual Weapon (cleric 2):  Conjures a ghostly weapon that fights alongside
+   *     the caster. The entity is a floating `summon` type with its own attack stats.
+   *   Invoke Allies:  Calls an allied creature to assist.
+   *   Summon Swarm:   Conjures a swarm creature as a linked entity.
+   *
+   * IMPLEMENTATION:
+   *   The spell's `castEffect.entityTemplateId` references a Feature of a special
+   *   `summon_template` category that stores a minimal character blueprint inside
+   *   its `grantedModifiers` or a dedicated `characterTemplate` sub-object.
+   *   The engine creates a minimal blank `Character` seeded with the template's
+   *   name and adds it as a `LinkedEntity` with type `entityType`.
+   *
+   *   The linked entity appears in the `SummonedEntitiesPanel` (magic tab).
+   *   The player can dismiss it via `dismissLinkedEntity(instanceId)`.
+   *
+   * @param spell - The MagicFeature being cast.
+   * @param ce    - The summon_entity castEffect block.
+   * @param currentRound - Combat round when cast.
+   */
+  #castSpellSummonEntity(
+    spell: import('../types/feature').MagicFeature,
+    ce: Extract<import('../types/feature-magic').SpellCastEffect, { type: 'summon_entity' }>,
+    currentRound: number,
+    /** How many entity instances to spawn. Default 1. For animated objects or undead swarms. */
+    count = 1
+  ): void {
+    const templateFeature = dataLoader.getFeature(ce.entityTemplateId) as
+      (import('../types/feature-base').Feature & { characterTemplate?: Partial<import('../types/character').Character> }) | null;
+
+    if (!templateFeature) {
+      console.warn(`[GameEngine] castSpellSummonEntity: template feature "${ce.entityTemplateId}" not found.`);
+      return;
+    }
+
+    // Clamp count to 1..20 to prevent abuse
+    const spawnCount = Math.max(1, Math.min(count, 20));
+
+    for (let i = 0; i < spawnCount; i++) {
+      const instanceId = `summon_${spell.id}_${Date.now()}_${i}`;
+      const entityName = buildLocalizedString(ce.nameKey);
+      const entityDisplayName = translateString(entityName, this.settings.language) || 'Summon';
+
+      // Build a minimal character for the summoned entity.
+      const entityChar = createEmptyCharacter(`entity_${instanceId}`, entityDisplayName);
+
+      // Apply the template's custom character data if provided.
+      const tmpl = (templateFeature as {characterTemplate?: Partial<import('../types/character').Character>}).characterTemplate ?? {};
+      Object.assign(entityChar, tmpl);
+      entityChar.name = entityDisplayName; // Always use the resolved display name
+      entityChar.isNPC = true;
+
+      // If the template feature defines activeFeatures (e.g., race, attacks), apply them.
+      if (Array.isArray(tmpl.activeFeatures) && tmpl.activeFeatures.length > 0) {
+        entityChar.activeFeatures = [...tmpl.activeFeatures];
+      }
+
+      const linkedEntity: import('../types/character').LinkedEntity = {
+        instanceId,
+        entityType: ce.entityType,
+        bondingFeatureId: ce.bondingFeatureId,
+        characterData: entityChar,
+      };
+
+      this.character.linkedEntities.push(linkedEntity);
+    } // end for loop
+  }
+
+  /**
+   * Dismisses (removes) a summoned linked entity.
+   *
+   * Called by `SummonedEntitiesPanel.svelte` when the player clicks "Dismiss".
+   * Also used to dismiss familiars, animal companions, or mounts that were
+   * programmatically created by spell effects.
+   *
+   * Only entities with `entityType: 'summon'` or other non-permanent types
+   * should be dismissible from the UI. Long-term companions (familiars, animal
+   * companions) should have a confirmation step and may warrant a separate method
+   * in the future (e.g., explicitly re-adding after dismissal with a class feature).
+   *
+   * WHY SEPARATE FROM `expireEffect`:
+   *   `expireEffect` removes ephemeral `ActiveFeatureInstance` items (weapon spawns,
+   *   buff effects). `dismissLinkedEntity` removes entries from `linkedEntities`.
+   *   These are two separate data structures; a single method is cleaner than a
+   *   combined dispatcher.
+   *
+   * @param instanceId - The `LinkedEntity.instanceId` to remove.
+   */
+  dismissLinkedEntity(instanceId: ID): void {
+    const index = this.character.linkedEntities.findIndex(e => e.instanceId === instanceId);
+    if (index === -1) {
+      console.warn(`[GameEngine] dismissLinkedEntity: entity "${instanceId}" not found.`);
+      return;
+    }
+    this.character.linkedEntities.splice(index, 1);
+  }
+
+  /**
+   * Returns all currently active spell-created entities that should be shown
+   * in the SummonedEntitiesPanel with a Dismiss button.
+   *
+   * Includes: `summon`, `undead`, `object` (all created by spells and dismissable).
+   * Excludes: `familiar`, `companion`, `mount` (permanent bonds managed elsewhere).
+   *
+   * Used by `SummonedEntitiesPanel.svelte`.
+   */
+  getSummonedEntities(): import('../types/character').LinkedEntity[] {
+    return this.character.linkedEntities.filter(
+      e => e.entityType === 'summon' || e.entityType === 'undead' || e.entityType === 'object'
+    );
+  }
+
+  /**
+   * Returns all linked entities regardless of type (companions, familiars, summons, mounts).
+   * Used when the full list is needed (e.g., for save/restore or a complete sheet view).
+   */
+  getAllLinkedEntities(): import('../types/character').LinkedEntity[] {
+    return this.character.linkedEntities;
   }
 
   /** Updates campaign settings. Partial updates are merged with Object.assign. */

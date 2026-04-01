@@ -9,7 +9,6 @@
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui, buildLocalizedString } from '$lib/i18n/ui-strings';
-  import { dataLoader } from '$lib/engine/DataLoader';
   import { formatModifier } from '$lib/utils/formatters';
   import DiceRollModal from '$lib/components/ui/DiceRollModal.svelte';
   import type { ItemFeature } from '$lib/types/feature';
@@ -59,11 +58,11 @@
 
   const equippedWeapons = $derived.by(() => {
     const weapons: WeaponOption[] = [UNARMED_OPTION as WeaponOption];
-    for (const afi of engine.character.activeFeatures) {
-      if (!afi.isActive) continue;
-      const feat = dataLoader.getFeature(afi.featureId);
-      if (!feat || feat.category !== 'item') continue;
-      const weapon = toWeaponOption(feat as ItemFeature, true);
+    // engine.getUsableWeaponFeatures() returns both standard equipped items (category: 'item')
+    // AND virtual weapons from class levelProgression (e.g., Soulknife Mind Blade, which is
+    // a class_feature with weaponData — not an inventory item, but usable in combat).
+    for (const { feature, isActive } of engine.getUsableWeaponFeatures()) {
+      const weapon = toWeaponOption(feature, isActive);
       if (weapon) weapons.push(weapon);
     }
     return weapons;

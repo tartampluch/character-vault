@@ -2724,6 +2724,161 @@
         "reachFt": 0,
         "rangeIncrementFt": 10
       }
+    },
+
+    {
+      "id": "item_magic_stone",
+      "category": "item",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Magic Stone",
+        "fr": "Pierre magique"
+      },
+      "description": {
+        "en": "A pebble transmuted by the Magic Stone spell. Acts as a +1 ranged weapon (enhancement bonus on attack and damage). Deals 1d6+1 bludgeoning damage (2d6+2 against undead). Thrown range increment: 20 ft. Can also be slung (range 50 ft.). Expires on use or after 30 minutes.",
+        "fr": "Un caillou transmué par le sort Pierre magique. Fonctionne comme une arme à distance +1 (bonus d'altération à l'attaque et aux dégâts). Inflige 1d6+1 dégâts contondants (2d6+2 contre les morts-vivants). Portée du lancer : 6 m. Peut aussi être lancé à la fronde (portée 15 m). S'éteint à l'utilisation ou après 30 minutes."
+      },
+      "tags": [
+        "item",
+        "weapon",
+        "ranged",
+        "magic_stone",
+        "spell_created"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "magic_stone_enhancement",
+          "sourceId": "item_magic_stone",
+          "sourceName": { "en": "Magic Stone (+1)", "fr": "Pierre magique (+1)" },
+          "targetId": "combatStats.base_attack_bonus",
+          "value": 1,
+          "type": "enhancement"
+        }
+      ],
+      "grantedFeatures": [],
+      "weaponData": {
+        "wieldCategory": "light",
+        "damageDice": "1d6+1",
+        "damageType": ["bludgeoning"],
+        "critRange": "20",
+        "critMultiplier": 2,
+        "reachFt": 0,
+        "rangeIncrementFt": 20
+      }
+    },
+
+    {
+      "id": "item_flame_blade",
+      "category": "item",
+      "ruleSource": "srd_core",
+      "label": { "en": "Flame Blade", "fr": "Lame de flamme" },
+      "description": {
+        "en": "A 3-foot-long blade of fire springs from your hand. Deals 1d8 fire damage +1/2 caster levels (max +10) on a successful melee touch attack. Against undead, deals maximum damage (counts as positive energy). Not affected by DR or hardness.",
+        "fr": "Une lame de feu de 90 cm jaillit de votre main. Inflige 1d8 dégâts de feu +1/2 niveaux (max +10) sur une attaque de contact au corps à corps réussie. Contre les morts-vivants, inflige des dégâts maximaux. Ignore la résistance aux dégâts et la solidité."
+      },
+      "tags": ["item", "weapon", "spell_created", "flame_blade"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "weaponData": {
+        "wieldCategory": "light",
+        "damageDice": "1d8",
+        "damageType": ["fire"],
+        "critRange": "20",
+        "critMultiplier": 2,
+        "reachFt": 5
+      }
+    },
+
+    {
+      "id": "item_produce_flame",
+      "category": "item",
+      "ruleSource": "srd_core",
+      "label": { "en": "Produce Flame (projectile)", "fr": "Création de flamme (projectile)" },
+      "description": {
+        "en": "A ball of flame thrown as a ranged touch attack (range 120 ft, range increment 25 ft) from a Produce Flame spell. Deals 1d6 fire damage +1/level (max +5).",
+        "fr": "Une boule de flamme lancée comme une attaque de contact à distance (portée 36 m, facteur de portée 7,5 m) depuis un sort de Création de flamme. Inflige 1d6 dégâts de feu +1/niveau (max +5)."
+      },
+      "tags": ["item", "weapon", "ranged", "spell_created", "produce_flame"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "weaponData": {
+        "wieldCategory": "light",
+        "damageDice": "1d6",
+        "damageType": ["fire"],
+        "critRange": "20",
+        "critMultiplier": 2,
+        "reachFt": 0,
+        "rangeIncrementFt": 25
+      }
+    },
+
+    {
+      "id": "item_fire_seed_berry",
+      "category": "item",
+      "ruleSource": "srd_core",
+      "label": { "en": "Fire Seed (holly berry)", "fr": "Graine de feu (baie de houx)" },
+      "description": {
+        "en": "A holly berry transmuted by the Fire Seeds spell. Thrown as a grenadelike weapon (range 40 ft). On impact it explodes, dealing 1d8 fire damage in a 5-ft radius (DC Reflex half). Up to 8 berries can be created.",
+        "fr": "Une baie de houx transmuée par le sort Graines de feu. Lancée comme une arme à fragmentation (portée 12 m). À l'impact, elle explose infligeant 1d8 dégâts de feu dans un rayon de 1,5 m (DD Réflexes ½). Jusqu'à 8 baies peuvent être créées."
+      },
+      "tags": ["item", "weapon", "ranged", "spell_created", "fire_seed"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "weaponData": {
+        "wieldCategory": "light",
+        "damageDice": "1d8",
+        "damageType": ["fire"],
+        "critRange": "20",
+        "critMultiplier": 2,
+        "reachFt": 0,
+        "rangeIncrementFt": 40
+      }
+    },
+
+    {
+      "id": "item_fire_seed_acorn",
+      "category": "item",
+      "ruleSource": "srd_core",
+      "label": { "en": "Fire Seed (acorn)", "fr": "Graine de feu (gland)" },
+      "description": {
+        "en": "An acorn transmuted by Fire Seeds. When placed and triggered, it explodes in a 10-ft radius dealing 2d6 fire damage. Up to 4 acorns can be created at once.",
+        "fr": "Un gland transmué par Graines de feu. Lorsqu'il est posé et déclenché, il explose dans un rayon de 3 m infligeant 2d6 dégâts de feu. Jusqu'à 4 glands peuvent être créés en une fois."
+      },
+      "tags": ["item", "weapon", "spell_created", "fire_seed"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "weaponData": {
+        "wieldCategory": "light",
+        "damageDice": "2d6",
+        "damageType": ["fire"],
+        "critRange": "20",
+        "critMultiplier": 2,
+        "reachFt": 5
+      }
+    },
+
+    {
+      "id": "item_flame_arrow",
+      "category": "item",
+      "ruleSource": "srd_core",
+      "label": { "en": "Flame Arrow (enchanted)", "fr": "Flèche de feu (enchantée)" },
+      "description": {
+        "en": "An arrow or bolt enchanted by the Flame Arrow spell. Deals standard ranged damage +1d6 fire damage. Valid for 10 minutes; up to 50 projectiles can be enchanted per casting.",
+        "fr": "Une flèche ou un carreau enchanté par le sort Flèche de feu. Inflige les dégâts à distance standard +1d6 dégâts de feu. Valide pendant 10 minutes ; jusqu'à 50 projectiles peuvent être enchantés par lancement."
+      },
+      "tags": ["item", "weapon", "ranged", "spell_created", "flame_arrow"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "weightLbs": 0.067,
+      "weaponData": {
+        "wieldCategory": "light",
+        "damageDice": "1d8",
+        "damageType": ["piercing"],
+        "critRange": "20",
+        "critMultiplier": 3,
+        "reachFt": 0,
+        "rangeIncrementFt": 110
+      }
     }
   ]
 }

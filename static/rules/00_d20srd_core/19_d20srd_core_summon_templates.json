@@ -1,0 +1,329 @@
+{
+  "supportedLanguages": ["en", "fr"],
+  "entities": [
+
+    {
+      "id": "summon_template_spiritual_weapon",
+      "category": "summon_template",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Spiritual Weapon (Force)",
+        "fr": "Arme spirituelle (Force)"
+      },
+      "description": {
+        "en": "A glowing weapon of pure force created by the Spiritual Weapon spell. It fights autonomously, using the caster's base attack bonus. It deals 1d8 force damage (+1 per 3 caster levels, max +5) and can strike incorporeal creatures without miss chance.",
+        "fr": "Une arme lumineuse de force pure créée par le sort Arme spirituelle. Elle combat de façon autonome, utilisant le bonus d'attaque de base du lanceur. Elle inflige 1d8 dégâts de force (+1 par tranche de 3 niveaux, max +5) et peut toucher les créatures intangibles sans raté automatique."
+      },
+      "tags": ["summon_template", "force_weapon", "spiritual_weapon"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "characterTemplate": {
+        "isNPC": true,
+        "attributes": {
+          "stat_strength":     { "baseValue": 10 },
+          "stat_dexterity":    { "baseValue": 10 },
+          "stat_constitution": { "baseValue": 10 },
+          "stat_intelligence": { "baseValue": 10 },
+          "stat_wisdom":       { "baseValue": 10 },
+          "stat_charisma":     { "baseValue": 10 }
+        },
+        "hitDieResults": { "1": 1 },
+        "notes": "Force weapon summoned by the Spiritual Weapon spell. Attacks autonomously using the caster's BAB. Deals 1d8 force damage. Can strike incorporeal creatures."
+      }
+    },
+
+    {
+      "id": "summon_template_nature_ally_1",
+      "category": "summon_template",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Nature's Ally (Small Animal)",
+        "fr": "Allié de la nature (Petit animal)"
+      },
+      "description": {
+        "en": "A small animal summoned by Summon Nature's Ally I. Typical choices include a dire rat, eagle, or small viper. The creature fights on the caster's behalf at full capability.",
+        "fr": "Un petit animal invoqué par Allié de la nature I. Les choix habituels incluent un rat sinistre, un aigle ou une petite vipère. La créature combat au nom du lanceur avec toute sa capacité."
+      },
+      "tags": ["summon_template", "nature_ally", "animal"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "characterTemplate": {
+        "isNPC": true,
+        "attributes": {
+          "stat_strength":     { "baseValue": 10 },
+          "stat_dexterity":    { "baseValue": 14 },
+          "stat_constitution": { "baseValue": 12 },
+          "stat_intelligence": { "baseValue": 2 },
+          "stat_wisdom":       { "baseValue": 12 },
+          "stat_charisma":     { "baseValue": 6 }
+        },
+        "hitDieResults": { "1": 4 },
+        "notes": "Small animal summoned by Summon Nature's Ally I. The GM or player chooses the specific animal type (dire rat, eagle, viper, etc.) when the spell is cast."
+      }
+    }
+
+  ,
+
+    {
+      "id": "summon_template_monster_cr1",
+      "category": "summon_template",
+      "ruleSource": "srd_core",
+      "label": { "en": "Summoned Monster (CR 1)", "fr": "Monstre invoqué (IR 1)" },
+      "description": {
+        "en": "A generic CR 1 summoned monster (fiendish wolf, celestial dog, etc.). The exact creature is chosen at casting time from the Summon Monster I list. Stats below are representative defaults.",
+        "fr": "Un monstre invoqué générique de IR 1 (loup fiélon, chien céleste, etc). La créature exacte est choisie au moment du lancement depuis la liste d'Appel de monstre I."
+      },
+      "tags": ["summon_template", "summoned_monster"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "characterTemplate": {
+        "isNPC": true,
+        "attributes": {
+          "stat_strength":     { "baseValue": 13 },
+          "stat_dexterity":    { "baseValue": 15 },
+          "stat_constitution": { "baseValue": 12 },
+          "stat_intelligence": { "baseValue": 2 },
+          "stat_wisdom":       { "baseValue": 12 },
+          "stat_charisma":     { "baseValue": 6 }
+        },
+        "hitDieResults": { "1": 6, "2": 6 },
+        "notes": "CR 1 summoned monster. Actual creature selected at cast time from Summon Monster I list."
+      }
+    },
+
+    {
+      "id": "summon_template_mount",
+      "category": "summon_template",
+      "ruleSource": "srd_core",
+      "label": { "en": "Summoned Mount (light horse)", "fr": "Monture invoquée (cheval léger)" },
+      "description": {
+        "en": "A light horse summoned by the Mount spell. Used for riding only; will not fight. Speed 60 ft.",
+        "fr": "Un cheval léger invoqué par le sort Monture. Sert uniquement à la monte ; ne combat pas. Vitesse 18 m."
+      },
+      "tags": ["summon_template", "mount", "horse"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "characterTemplate": {
+        "isNPC": true,
+        "attributes": {
+          "stat_strength":     { "baseValue": 16 },
+          "stat_dexterity":    { "baseValue": 13 },
+          "stat_constitution": { "baseValue": 15 },
+          "stat_intelligence": { "baseValue": 2 },
+          "stat_wisdom":       { "baseValue": 12 },
+          "stat_charisma":     { "baseValue": 6 }
+        },
+        "hitDieResults": { "1": 6, "2": 6, "3": 6 },
+        "notes": "Light horse. Will not fight. 60 ft speed. Lasts 2 hours/level (D)."
+      }
+    },
+
+    {
+      "id": "summon_template_phantom_steed",
+      "category": "summon_template",
+      "ruleSource": "srd_core",
+      "label": { "en": "Phantom Steed", "fr": "Destrier fantôme" },
+      "description": {
+        "en": "A quasi-real horse created by the Phantom Steed spell. Speed 20 ft + 20 ft/3 caster levels (max 100 ft at 12th). Can walk on water at 12th level, fly at 15th.",
+        "fr": "Un cheval quasi-réel créé par le sort Destrier fantôme. Vitesse 6 m + 6 m/3 niveaux (max 30 m au niveau 12). Peut marcher sur l'eau au niveau 12, voler au niveau 15."
+      },
+      "tags": ["summon_template", "phantom_steed", "mount", "object"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "characterTemplate": {
+        "isNPC": true,
+        "attributes": {
+          "stat_strength":     { "baseValue": 18 },
+          "stat_dexterity":    { "baseValue": 16 },
+          "stat_constitution": { "baseValue": 14 },
+          "stat_intelligence": { "baseValue": 2 },
+          "stat_wisdom":       { "baseValue": 13 },
+          "stat_charisma":     { "baseValue": 6 }
+        },
+        "hitDieResults": { "1": 8, "2": 8 },
+        "notes": "Phantom Steed. Quasi-real mount. Lasts 1 hour/level (D). The steed gains speed bonuses and special abilities at higher caster levels."
+      }
+    },
+
+    {
+      "id": "summon_template_unseen_servant",
+      "category": "summon_template",
+      "ruleSource": "srd_core",
+      "label": { "en": "Unseen Servant", "fr": "Serviteur invisible" },
+      "description": {
+        "en": "An invisible, mindless, shapeless servant that obeys simple commands. STR 2 (6 lbs carry capacity). Cannot attack or carry more than 20 lbs. Lasts 1 hour/level.",
+        "fr": "Un serviteur invisible, sans intelligence ni forme qui obéit à des ordres simples. FOR 2 (3 kg de capacité de portage). Ne peut pas attaquer ni porter plus de 9 kg. Dure 1 heure/niveau."
+      },
+      "tags": ["summon_template", "unseen_servant", "object"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "characterTemplate": {
+        "isNPC": true,
+        "attributes": {
+          "stat_strength":     { "baseValue": 2 },
+          "stat_dexterity":    { "baseValue": 10 },
+          "stat_constitution": { "baseValue": 10 },
+          "stat_intelligence": { "baseValue": 1 },
+          "stat_wisdom":       { "baseValue": 1 },
+          "stat_charisma":     { "baseValue": 1 }
+        },
+        "hitDieResults": { "1": 1 },
+        "notes": "Mindless invisible servant. STR 2: can carry/move 6 lbs, lift 20 lbs. Acts on caster's turn. Cannot communicate or interact meaningfully."
+      }
+    },
+
+    {
+      "id": "summon_template_animated_object_small",
+      "category": "summon_template",
+      "ruleSource": "srd_core",
+      "label": { "en": "Animated Object (Small)", "fr": "Objet animé (Petit)" },
+      "description": {
+        "en": "A Small animated object (chair, barrel, sack, etc.) animated by the Animate Objects spell. Speed 40 ft. Attacks with slam.",
+        "fr": "Un objet animé de taille Petite (chaise, tonneau, poche, etc.) animé par le sort Animer les objets. Vitesse 12 m. Attaque par estoc."
+      },
+      "tags": ["summon_template", "animated_object"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "characterTemplate": {
+        "isNPC": true,
+        "attributes": {
+          "stat_strength":     { "baseValue": 10 },
+          "stat_dexterity":    { "baseValue": 10 },
+          "stat_constitution": { "baseValue": 10 },
+          "stat_intelligence": { "baseValue": 1 },
+          "stat_wisdom":       { "baseValue": 1 },
+          "stat_charisma":     { "baseValue": 1 }
+        },
+        "hitDieResults": { "1": 6, "2": 6 },
+        "notes": "Small animated object. AC 14 (+4 size). Slam 1d4. Speed depends on number of limbs."
+      }
+    },
+
+    {
+      "id": "summon_template_shambler",
+      "category": "summon_template",
+      "ruleSource": "srd_core",
+      "label": { "en": "Shambling Mound", "fr": "Tas rampant" },
+      "description": {
+        "en": "A shambling mound created or empowered by the Shambler spell. Large plant creature. AC 20, hp 60 (8d8+24). Constrict attack.",
+        "fr": "Un tas rampant créé ou renforcé par le sort Tas rampant. Grande créature végétale. CA 20, pv 60 (8d8+24). Attaque d'étreinte."
+      },
+      "tags": ["summon_template", "shambler", "plant"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "characterTemplate": {
+        "isNPC": true,
+        "attributes": {
+          "stat_strength":     { "baseValue": 21 },
+          "stat_dexterity":    { "baseValue": 8 },
+          "stat_constitution": { "baseValue": 17 },
+          "stat_intelligence": { "baseValue": 7 },
+          "stat_wisdom":       { "baseValue": 10 },
+          "stat_charisma":     { "baseValue": 9 }
+        },
+        "hitDieResults": { "1": 8, "2": 8, "3": 8, "4": 8, "5": 8, "6": 8, "7": 8, "8": 8 },
+        "notes": "Shambling mound. Large plant. Electricity immunity. Can constrict (+13, 1d6+7). Lasts 7 days (combat ally) or 7 months (guardian) at druid's option."
+      }
+    },
+
+    {
+      "id": "summon_template_zombie",
+      "category": "summon_template",
+      "ruleSource": "srd_core",
+      "label": { "en": "Zombie (Medium)", "fr": "Zombi (Taille M)" },
+      "description": {
+        "en": "A Medium humanoid zombie created by Animate Dead. Undead creature. hp 16 (2d12+3). Slam attack +2 (1d6+1).",
+        "fr": "Un zombi humanoïde de taille Moyenne créé par Animer les morts. Créature morte-vivante. pv 16 (2d12+3). Attaque de coup +2 (1d6+1)."
+      },
+      "tags": ["summon_template", "undead", "zombie"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "characterTemplate": {
+        "isNPC": true,
+        "attributes": {
+          "stat_strength":     { "baseValue": 12 },
+          "stat_dexterity":    { "baseValue": 8 },
+          "stat_constitution": { "baseValue": 10 },
+          "stat_intelligence": { "baseValue": 1 },
+          "stat_wisdom":       { "baseValue": 10 },
+          "stat_charisma":     { "baseValue": 1 }
+        },
+        "hitDieResults": { "1": 12, "2": 12 },
+        "notes": "Medium human zombie. Undead type. Immune to mind-affecting effects, poison, sleep, paralysis, stunning, disease, death effects. Cannot heal naturally."
+      }
+    },
+
+    {
+      "id": "summon_template_skeleton",
+      "category": "summon_template",
+      "ruleSource": "srd_core",
+      "label": { "en": "Skeleton (Medium)", "fr": "Squelette (Taille M)" },
+      "description": {
+        "en": "A Medium humanoid skeleton created by Animate Dead. Undead. hp 6 (1d12). Slam attack +1 (1d6).",
+        "fr": "Un squelette humanoïde de taille Moyenne créé par Animer les morts. Créature morte-vivante. pv 6 (1d12). Coup +1 (1d6)."
+      },
+      "tags": ["summon_template", "undead", "skeleton"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "characterTemplate": {
+        "isNPC": true,
+        "attributes": {
+          "stat_strength":     { "baseValue": 10 },
+          "stat_dexterity":    { "baseValue": 14 },
+          "stat_constitution": { "baseValue": 10 },
+          "stat_intelligence": { "baseValue": 1 },
+          "stat_wisdom":       { "baseValue": 10 },
+          "stat_charisma":     { "baseValue": 1 }
+        },
+        "hitDieResults": { "1": 12 },
+        "notes": "Medium human skeleton. Undead type. Damage reduction 5/bludgeoning. Immune to cold."
+      }
+    },
+
+    {
+      "id": "summon_template_swarm",
+      "category": "summon_template",
+      "ruleSource": "srd_core",
+      "label": { "en": "Summoned Swarm", "fr": "Nuée invoquée" },
+      "description": {
+        "en": "A swarm of bats, rats, or spiders summoned by Summon Swarm. Fine Diminutive creatures that fill a 10-ft square. Immune to weapon damage.",
+        "fr": "Une nuée de chauves-souris, rats ou araignées invoquée par Appel de nuée. Créatures de taille Infime qui remplissent un carré de 3 m. Immunisée contre les dégâts d'armes."
+      },
+      "tags": ["summon_template", "swarm"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "characterTemplate": {
+        "isNPC": true,
+        "attributes": {
+          "stat_strength":     { "baseValue": 1 },
+          "stat_dexterity":    { "baseValue": 15 },
+          "stat_constitution": { "baseValue": 10 },
+          "stat_intelligence": { "baseValue": 2 },
+          "stat_wisdom":       { "baseValue": 12 },
+          "stat_charisma":     { "baseValue": 4 }
+        },
+        "hitDieResults": { "1": 8, "2": 8, "3": 8 },
+        "notes": "Bat/rat/spider swarm. Occupies 10×10 ft square. Immune to weapon damage, flanking. Concentration DC 17+spell level required to cast in swarm."
+      }
+    },
+
+    {
+      "id": "summon_template_shelter",
+      "category": "summon_template",
+      "ruleSource": "srd_core",
+      "label": { "en": "Conjured Shelter / Space", "fr": "Abri / espace conjuré" },
+      "description": {
+        "en": "A generic template for conjured shelters and extradimensional spaces: Tiny Hut, Secure Shelter, Mage's Magnificent Mansion. Tracked here so the player can dismiss the shelter when the duration ends.",
+        "fr": "Template générique pour les abris et espaces extradimensionnels conjurés : Petite cabane, Abri sûr, Magnifique manoir du mage. Suivi ici pour que le joueur puisse renvoyer l'abri quand la durée expire."
+      },
+      "tags": ["summon_template", "shelter", "object"],
+      "grantedModifiers": [],
+      "grantedFeatures": [],
+      "characterTemplate": {
+        "isNPC": true,
+        "notes": "Conjured shelter or extradimensional space. No stats — tracked only for duration management. Dismiss when duration expires."
+      }
+    }
+
+  ]
+}

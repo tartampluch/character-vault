@@ -189,7 +189,7 @@
   {/snippet}
 </PageHeader>
 
-<div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-8">
+<div class="w-full px-4 sm:px-6 py-6 flex flex-col gap-8">
 
   <!-- ── CHARACTERS SECTION ────────────────────────────────────────────────── -->
   {#if engine.allVaultCharacters.length === 0}

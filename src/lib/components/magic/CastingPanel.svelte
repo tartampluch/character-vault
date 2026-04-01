@@ -110,28 +110,43 @@
    * Handles the Cast button for a known arcane/divine spell.
    *
    * ZERO-GAME-LOGIC RULE (ARCHITECTURE.md §3):
-   *   The slot deduction and pool validation are delegated entirely to the engine.
+   *   Slot deduction, pool validation, and castEffect dispatch are all
+   *   delegated entirely to engine methods — no game logic here.
+   *
+   * CAST EFFECT DISPATCH:
+   *   If the spell declares a `castEffect` (e.g., Magic Stone spawning pebble
+   *   weapons, Spiritual Weapon summoning a linked entity), the engine handles
+   *   it transparently via `engine.castSpellEffect()`. No Svelte code needs to
+   *   know WHAT the effect does — that logic lives in the engine.
    */
   function handleCast(spell: MagicFeature, spellLevel: number): void {
     const ok = engine.useSpellSlot(spellLevel);
     if (!ok) {
       alert(ui('magic.casting.no_slot_available', engine.settings.language));
+      return;
     }
+    // Dispatch any cast-side-effect (spawn weapons, summon entity, etc.)
+    // The engine checks spell.castEffect and handles it internally.
+    engine.castSpellEffect(spell, spellLevel, 0);
   }
 
   /**
    * Handles the Manifest button for a psionic power.
    *
    * ZERO-GAME-LOGIC RULE (ARCHITECTURE.md §3):
-   *   PP validation and deduction are entirely within the engine method.
+   *   PP validation, deduction, and any castEffect dispatch are delegated
+   *   entirely to engine methods — no game logic here.
    */
   function handleManifest(spell: MagicFeature, ppCost: number): void {
     const ok = engine.spendPowerPoints(ppCost);
     if (!ok) {
       alert(ui('magic.casting.insufficient_pp', engine.settings.language));
-    } else {
-      augSteps[spell.id] = 0;
+      return;
     }
+    augSteps[spell.id] = 0;
+    // Dispatch any cast-side-effect (e.g., psionic powers that spawn entities).
+    const spellLevel = engine.getSpellEffectiveLevel(spell.spellLists);
+    engine.castSpellEffect(spell, spellLevel, 0);
   }
 
   // ── Magic Items scanning ─────────────────────────────────────────────────────

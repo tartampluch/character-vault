@@ -176,4 +176,5 @@ export { PinOff as IconPinOff } from 'lucide-svelte'; // Unpin item from sidebar
 
 // ─── LOADING / ASYNC STATE ────────────────────────────────────────────────────
 // Used in AppShell.svelte locale-loading spinner (Phase 19.4)
-export { LoaderCircle as IconLoading      } from 'lucide-svelte'; // Indeterminate loading spinner (use with animate-spin)
+ export { LoaderCircle as IconLoading      } from 'lucide-svelte'; // Indeterminate loading spinner (use with animate-spin)
+export { Ghost        as IconSummon       } from 'lucide-svelte'; // Summoned entity (ghost = ephemeral conjured being)

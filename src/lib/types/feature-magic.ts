@@ -414,5 +414,163 @@ export interface MagicFeature extends Feature {
    * @see AugmentationRule for full documentation.
    */
   augmentations?: AugmentationRule[];
+
+  /**
+   * Optional cast-time side effect: what happens mechanically when this spell is cast.
+   *
+   * DESIGN RATIONALE (zero-hardcoding, ARCHITECTURE.md §6):
+   *   The engine must not know the names "Magic Stone", "Spiritual Weapon", or
+   *   "Invoke Allies" — those are D&D content, not engine logic. Instead, each
+   *   spell's JSON entry declares WHAT it does when cast via this field. The engine
+   *   reads the `castEffect` and dispatches to the appropriate engine method.
+   *
+   * Supported cast effect types:
+   *
+   *   `spawn_weapons`:
+   *     Casting this spell creates one or more new weapon entries on the character.
+   *     These are ephemeral — they disappear when all charges are consumed or when
+   *     the effect is manually dismissed. Used for: Magic Stone (3 enchanted pebbles),
+   *     Shillelagh (enchanted staff), Masterwork Transformation, etc.
+   *
+   *     Fields:
+   *       - `weaponFeatureId`: The Feature ID of the item_* weapon to spawn.
+   *         The feature must have `weaponData` and the 'weapon' or 'ranged' tag.
+   *       - `count`:           How many weapon instances to create (e.g., 3 for Magic Stone).
+   *       - `chargesPerWeapon`:Optional charges; if present an `itemResourcePools.charges`
+   *         entry is initialised on each spawned weapon instance. When a charge is spent
+   *         (a throw is made), `spendItemPoolCharge()` decrements it. When 0, the weapon
+   *         is automatically removed by the engine.
+   *       - `durationHint`:    Human-readable lifetime string shown in the ephemeral
+   *         effects panel (e.g., "30 min" for Magic Stone's duration).
+   *
+   *   `summon_entity`:
+   *     Casting this spell adds a linked entity to the character.
+   *     The linked entity is a minimal creature / weapon / object with its own
+   *     character data (stats, features). The player can later dismiss it manually.
+   *     Used for: Spiritual Weapon, Invoke Allies, Summon Swarm, etc.
+   *
+   *     Fields:
+   *       - `entityType`:      'summon' | 'companion' | 'familiar' | 'mount'.
+   *       - `bondingFeatureId`:Feature ID of the spell — used to track which spell
+   *         created this entity and to label the entity in the dismissed panel.
+   *       - `entityTemplateId`:Feature ID of a 'summon_template' Feature that
+   *         describes the entity's base character data (stats, attacks, etc.).
+   *         The engine calls `dataLoader.getFeature(entityTemplateId)` and uses
+   *         the template's embedded `characterTemplate` sub-object.
+   *       - `nameKey`:         UI string key for the entity's display name
+   *         (e.g., 'magic.summon.spiritual_weapon').
+   *       - `durationHint`:    Human-readable duration hint (e.g., "1 round/level").
+   */
+  castEffect?: SpellCastEffect;
 }
+
+// =============================================================================
+// SPELL CAST EFFECT — Discriminated union for all supported cast-time mechanics
+// =============================================================================
+
+/**
+ * Discriminated union describing everything that can happen at cast-time.
+ *
+ * DESIGN NOTE (zero-hardcoding, ARCHITECTURE.md §6):
+ *   No spell name or D&D-specific logic appears in TypeScript. The JSON content
+ *   for each spell declares which `type` of effect it has. The engine's
+ *   `castSpellEffect()` dispatcher reads this and calls the appropriate handler.
+ *
+ * Supported types:
+ *   - `spawn_weapons`   — Create 1..N ephemeral weapons (Magic Stone, Flame Blade, Produce Flame…)
+ *   - `summon_entity`   — Conjure a creature/weapon/ally linked entity (Summon Monster, Spiritual Weapon…)
+ *   - `animate_objects` — Animate existing inanimate objects as linked entities (Animate Rope, Animate Objects…)
+ *   - `animate_undead`  — Raise undead from corpses; creates undead-type linked entities (Animate Dead…)
+ *   - `create_object`   — Create a non-creature object/space; tracked as an 'object' linked entity
+ *                         so the player can dismiss it when the duration ends
+ *                         (Unseen Servant, Phantom Steed, Tiny Hut, Minor Creation…)
+ */
+export type SpellCastEffect =
+  | {
+      type: 'spawn_weapons';
+      /**
+       * Feature ID of the weapon item to spawn (`item_*` with `weaponData`).
+       * Examples: "item_magic_stone", "item_flame_blade", "item_produce_flame"
+       */
+      weaponFeatureId: string;
+      /** How many weapon instances to create. Magic Stone = 3, most others = 1. */
+      count: number;
+      /**
+       * Optional per-weapon charge count. When set, an `itemResourcePools.charges`
+       * entry is initialised. Each attack throw consumes one charge.
+       * When ≤ 0, the weapon is automatically removed. Leave unset for weapons
+       * that last the full duration (Flame Blade, Produce Flame).
+       */
+      chargesPerWeapon?: number;
+      /** Human-readable duration hint shown in the Ephemeral Effects panel. */
+      durationHint?: string;
+    }
+  | {
+      type: 'summon_entity';
+      /**
+       * The type of linked entity. Controls the badge shown in SummonedEntitiesPanel.
+       * Use 'summon' for temporary conjured creatures; 'mount' for Phantom Steed/Mount.
+       */
+      entityType: 'summon' | 'companion' | 'familiar' | 'mount' | 'undead' | 'object';
+      /**
+       * Feature ID of THIS spell — stored on the linked entity as `bondingFeatureId`
+       * so the UI can display which spell created the entity.
+       */
+      bondingFeatureId: string;
+      /**
+       * Feature ID of a `summon_template` Feature that carries a `characterTemplate`
+       * sub-object describing the summoned entity's base stats and active features.
+       * DataLoader resolves this ID at cast-time.
+       */
+      entityTemplateId: string;
+      /**
+       * UI string key for the entity's display name.
+       * Resolved via `ui(nameKey, language)` at runtime.
+       * Examples: "magic.summon.spiritual_weapon", "magic.summon.summon_monster_1"
+       */
+      nameKey: string;
+      /** Human-readable duration hint (e.g., "1 round/level", "2 hours/level"). */
+      durationHint?: string;
+    }
+  | {
+      type: 'animate_objects';
+      /**
+       * Feature ID of the template for the animated object/creature.
+       * Typically a `summon_template` category feature with basic combat stats.
+       */
+      entityTemplateId: string;
+      /** How many objects are animated (for spells like Animate Objects). */
+      count?: number;
+      /** UI string key for the animated object's display name. */
+      nameKey: string;
+      /** Human-readable duration hint. */
+      durationHint?: string;
+    }
+  | {
+      type: 'animate_undead';
+      /**
+       * Feature ID of the undead template (a `summon_template` with `entityType: 'undead'`).
+       * Examples: "summon_template_skeleton", "summon_template_zombie"
+       */
+      entityTemplateId: string;
+      /** How many undead are created. Animate Dead = up to 2 HD per level. */
+      count?: number;
+      /** UI string key for the undead name. */
+      nameKey: string;
+      /** Human-readable duration hint ("Instantaneous", "Permanent"). */
+      durationHint?: string;
+    }
+  | {
+      type: 'create_object';
+      /**
+       * Feature ID of the object template defining what was created.
+       * Most simple "created objects" (Minor Creation, Phantom Steed if treated as
+       * quasi-real mount) use generic templates in 19_d20srd_core_summon_templates.json.
+       */
+      entityTemplateId: string;
+      /** UI string key for the object's name ("magic.create.unseen_servant", etc.). */
+      nameKey: string;
+      /** Human-readable duration hint shown in the SummonedEntitiesPanel. */
+      durationHint?: string;
+    };
 

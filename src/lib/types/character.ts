@@ -272,7 +272,7 @@ export interface LinkedEntity {
    * The type of link/relationship between character and linked entity.
    * Used by the UI to display the appropriate label ("Familiar", "Animal Companion", etc.).
    */
-  entityType: 'companion' | 'familiar' | 'mount' | 'summon';
+  entityType: 'companion' | 'familiar' | 'mount' | 'summon' | 'undead' | 'object';
 
   /**
    * The ID of the Feature on the MASTER CHARACTER that created this link.
